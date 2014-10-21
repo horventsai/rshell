@@ -30,6 +30,24 @@ int main(int argc, char *argv[])
 		{
 			exit(0);
 		}
+		else
+		{
+			int pid_c = fork();
+			if(pid_c == 0)
+			{
+				//begin commands here
+			}
+			else if(pid_c == -1)
+			{
+				//exits with error code 1
+				perror("fork");
+				exit(1);
+			}
+			else
+			{
+				wait(NULL);
+			}
+		}
 	}
 	return 0;
 }
