@@ -11,34 +11,22 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char *argv[])
 {
 	while(1)
 	{
 		//variables
-		char command[] = "test this is a string test to work with";
+		char command[1024];
 		char *pch;
-		vector<string> holding;
-		char *name;
-		size_t len;
+		char name[1024];
 
-		cout << getlogin() << "@" << gethostname(name, len) <<  " $ ";
-		getline(cin, command);
+		gethostname(name, 1024);
+		cout << getlogin() << "@" << name <<  " $ ";
+		cin.getline(command, 1024);
 		
 		pch = strtok(command, " \t\n\r");
 
-		while(pch != NULL)
-		{
-			holding.push_back(pch);
-			pch = strtok(NULL, " \t\n\r");
-		}
-		
-		for(int i = 0; i < holding.size(); i++)
-		{
-			cout << holding.at(i) << " ";
-		}
-		
-		if(command == "exit")
+		if(command[0].c_str == "exit")
 		{
 			exit(0);
 		}
