@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 		
 		pch = strtok(command, " \t\n\r");
 
-		if(command[0].c_str == "exit")
+		if(!strcmp(command,"exit"))
 		{
 			exit(0);
 		}
