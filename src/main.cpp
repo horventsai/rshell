@@ -32,12 +32,17 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			int pid_c = fork();
-			if(pid_c == 0)
+			int pid_f = fork();
+			if(pid_f == 0)
 			{
 				//begin commands here
+				if(execvp(argv[0], argv) == -1)
+				{ 
+					perror("execvp");
+					exit(1);
+				}
 			}
-			else if(pid_c == -1)
+			else if(pid_f == -1)
 			{
 				//exits with error code 1
 				perror("fork");
