@@ -13,6 +13,7 @@ KNOWN BUGS in version from 10212014:
 -cannot handle comment
 -cannot handle connectors
 -cannot access non-bin commands such as 'cd'
+-cannot finger self
 
 POSSIBLE BUGS:
 -memory leaks
