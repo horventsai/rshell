@@ -15,12 +15,12 @@ int main()
 {
 	while(1)
 	{
-		//variables
+									//VARIABLES
 		char command[1024];					//used for user input, for the initial holding before parse
 		char *pch;						//for strtok tokens(pointer)
 		char name[1024];					//used for gethostname
 
-		//gethostname(name, 1024);
+
 									//ERROR CHECKING FOR PROMPT
 		char *pid_ln = getlogin();				//error check for getlogin()
 		if(pid_ln == NULL)
@@ -35,8 +35,10 @@ int main()
 			exit(1);
 		}
 
-		cout << getlogin() << "@" << name <<  " $ ";
-		cin.getline(command, 1024);
+
+									//BEGINNING OF SHELL CODE
+		cout << getlogin() << "@" << name <<  " $ ";		//cout user prompt, bash prompt
+		cin.getline(command, 1024);				//cin user input
 		
 		//pch = strtok(command, " \t");				//parse user input into string tokens, taking input from 'command'
 
