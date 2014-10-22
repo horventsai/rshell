@@ -19,7 +19,7 @@ int main()
 		char command[1024];					//used for user input, for the initial holding before parse
 		char *pch;						//for strtok tokens(pointer)
 		char name[1024];					//used for gethostname
-		char *com;						//for strchr comment
+		//char *com;						//for strchr comment
 
 									//ERROR CHECKING FOR PROMPT
 		char *pid_ln = getlogin();				//error check for getlogin()
@@ -42,7 +42,7 @@ int main()
 		
 		//pch = strtok(command, " \t");				//parse user input into string tokens, taking input from 'command'
 
-		com = strchr(command, '#');				//finds all cases of # in user input, only using first for comment initiation
+		//com = strchr(command, '#');				//finds all cases of # in user input, only using first for comment initiation
 		
 
 		char **arg;						//pointer to pointer of chars
