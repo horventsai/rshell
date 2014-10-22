@@ -1,2 +1,18 @@
 This is my rshell project
 
+WHATIS:
+rshell is a shell that goes on top of bash
+
+WHATS SUPPORTED in version 10212014-hw01:
+-echo
+-cd
+-pwd
+-ls, with multiple flag support
+
+KNOWN BUGS in version from 10212014:
+-cannot handle comment
+-cannot handle connectors
+-cannot access non-bin commands such as 'cd'
+
+POSSIBLE BUGS:
+-memory leaks
