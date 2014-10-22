@@ -16,9 +16,9 @@ int main(int argc, char *argv[])
 	while(1)
 	{
 		//variables
-		char command[1024];
-		char *pch;
-		char name[1024];
+		char command[1024];					//used for user input, for the initial holding before parse
+		char *pch;						//for strtok tokens(pointer)
+		char name[1024];					//used for gethostname
 
 		gethostname(name, 1024);
 		cout << getlogin() << "@" << name <<  " $ ";
@@ -26,17 +26,21 @@ int main(int argc, char *argv[])
 		
 		pch = strtok(command, " \t\n\r");
 
-		char **argv;
-		argv = new char *[1024];
+		char **argv;						//pointer to pointer of chars
+		argv = new char *[1024];				//creates new array of size DEFINED
+		//argv[1023] = NULL;					//places NULL at second to last slot of array
 
 		int it = 0;
 
+		
 		while(pch != NULL)
 		{
-			argv[it] = command;
+			argv[it] = pch;
 			for(/*iterator declared outside as 'it'*/; it < 1024; it++);
 			pch = strtok(NULL, " ");
 		}
+
+		//argv[1023] = NULL;					//places NULL at second to last slot of array
 
 		if(!strcmp(command,"exit"))
 		{
@@ -44,11 +48,12 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			int pid_f = fork();
+			int pid_f = fork();				//error check for system call:fork()
 			if(pid_f == 0)
 			{
 				//begin commands here
-				if(execvp(argv[0], argv) == -1)
+				int pid_e = execvp(argv[0], argv);	//error check for system call:execvp()
+				if(pid_e == -1)
 				{ 
 					perror("execvp");
 					exit(1);
