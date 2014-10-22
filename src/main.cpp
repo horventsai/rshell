@@ -21,7 +21,7 @@ int main()
 		char name[1024];					//used for gethostname
 
 		//gethostname(name, 1024);
-
+									//ERROR CHECKING FOR PROMPT
 		char *pid_ln = getlogin();				//error check for getlogin()
 		if(pid_ln == NULL)
 		{
@@ -38,21 +38,20 @@ int main()
 		cout << getlogin() << "@" << name <<  " $ ";
 		cin.getline(command, 1024);
 		
-		pch = strtok(command, " \t");				//parse user input into string tokens, taking input from 'command'
+		//pch = strtok(command, " \t");				//parse user input into string tokens, taking input from 'command'
 
 		char **arg;						//pointer to pointer of chars
 		arg = new char *[1024];					//creates new array of size DEFINED
 		//arg[1023] = NULL;					//places NULL at second to last slot of array
 
 		int it = 0;
-		
-		while(pch != NULL)
+		for(pch = strtok(command, " \t");
+			pch != NULL;
+			pch = strtok(NULL, " \t"))			//for-loop to move tokens into arg array
 		{
-			arg[it] = pch;
-			for(/*iterator declared outside as 'it'*/; it < 1024; it++);
-			pch = strtok(NULL, " \t");
+			arg[it] = pch;					//at iterator it place token
+			it++;						//increase iterator by one
 		}
-
 		arg[it] = NULL;						//places NULL at slot in array right after parse finishes
 
 		if(!strcmp(command,"exit"))				//if 'command' only holds exit,
