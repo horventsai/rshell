@@ -62,7 +62,7 @@ int main()
 		else
 		{
 			int pid_f = fork();				//error check for system call:fork()
-			if(pid_f == 0)
+			if(pid_f == 0)					//CHILD
 			{
 				//begin commands here
 				int pid_e = execvp(arg[0], arg);	//error check for system call:execvp()
@@ -72,14 +72,15 @@ int main()
 					exit(1);
 				}
 			}
-			else if(pid_f == -1)
+			else if(pid_f == -1)				//ERROR
 			{
 				perror("fork");				//if fork fails to function, exits with error code
 				exit(1);
 			}
-			else
+			else						//PARENT
 			{
 				wait(NULL);				//wait for child
+
 			}
 		}
 	}
