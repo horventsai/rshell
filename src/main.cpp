@@ -26,6 +26,18 @@ int main(int argc, char *argv[])
 		
 		pch = strtok(command, " \t\n\r");
 
+		char **argv;
+		argv = new char *[1024];
+
+		int it = 0;
+
+		while(pch != NULL)
+		{
+			argv[it] = command;
+			for(/*iterator declared outside as 'it'*/; it < 1024; it++);
+			pch = strtok(NULL, " ");
+		}
+
 		if(!strcmp(command,"exit"))
 		{
 			exit(0);
