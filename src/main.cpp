@@ -20,31 +20,45 @@ int main()
 		char *pch;						//for strtok tokens(pointer)
 		char name[1024];					//used for gethostname
 
-		gethostname(name, 1024);
+		//gethostname(name, 1024);
+
+		char *pid_ln = getlogin();				//error check for getlogin()
+		if(pid_ln == NULL)
+		{
+			perror("getlogin");
+			exit(1);
+		}
+		int pid_hn = gethostname(name, 1024);			//error check for gethostname()
+		if(pid_hn != 0)
+		{
+			perror("gethostname");
+			exit(1);
+		}
+
 		cout << getlogin() << "@" << name <<  " $ ";
 		cin.getline(command, 1024);
 		
-		pch = strtok(command, " \t\n\r");
+		pch = strtok(command, " \t");				//parse user input into string tokens, taking input from 'command'
 
-		char **argv;						//pointer to pointer of chars
-		argv = new char *[1024];				//creates new array of size DEFINED
-		//argv[1023] = NULL;					//places NULL at second to last slot of array
+		char **arg;						//pointer to pointer of chars
+		arg = new char *[1024];					//creates new array of size DEFINED
+		//arg[1023] = NULL;					//places NULL at second to last slot of array
 
 		int it = 0;
-
 		
 		while(pch != NULL)
 		{
-			argv[it] = pch;
+			arg[it] = pch;
 			for(/*iterator declared outside as 'it'*/; it < 1024; it++);
-			pch = strtok(NULL, " ");
+			pch = strtok(NULL, " \t");
 		}
 
-		//argv[1023] = NULL;					//places NULL at second to last slot of array
+		arg[it] = NULL;						//places NULL at slot in array right after parse finishes
 
-		if(!strcmp(command,"exit"))
+		if(!strcmp(command,"exit"))				//if 'command' only holds exit,
 		{
-			exit(0);
+			delete []arg;					//delete []arg on exit prompt
+			exit(0);					//exit without loading error code; exit code: 0
 		}
 		else
 		{
@@ -52,22 +66,21 @@ int main()
 			if(pid_f == 0)
 			{
 				//begin commands here
-				int pid_e = execvp(argv[0], argv);	//error check for system call:execvp()
+				int pid_e = execvp(arg[0], arg);	//error check for system call:execvp()
 				if(pid_e == -1)
-				{ 
-					perror("execvp");
+				{
+					perror("execvp");		//if execvp fails to function, exits with error code
 					exit(1);
 				}
 			}
 			else if(pid_f == -1)
 			{
-				//exits with error code 1
-				perror("fork");
+				perror("fork");				//if fork fails to function, exits with error code
 				exit(1);
 			}
 			else
 			{
-				wait(NULL);
+				wait(NULL);				//wait for child
 			}
 		}
 	}
