@@ -29,6 +29,21 @@ int main(int argc, char* argv[])
 	}
 	else						//if there is only 'ls'
 	{
+		char* dirn = ".";
+		DIR* dirp = opendir(dirn);
+		dirent = *direntp;
+		if(dirp != NULL)			//assume dirp does not return NULL
+		{
+			while((direntp = readdir(dirp)))
+			{
+				cout << direntp->d_name << endl;
+			}
+		}
+		else					//error check for system call
+		{
+			perror("opendir");
+			exit(1);
+		}
 	}
 
 	return 0;
