@@ -1,8 +1,15 @@
-#include <sys/types.h>
-#include <dirent.h>
-#include <errno.h>
-
 #include <iostream>
+#include <cstdlib>
+#include <vector>
+#include <string>
+#include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <stdio.h>
+#include <dirent.h>
+
 
 using namespace std;
 
