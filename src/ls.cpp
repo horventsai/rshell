@@ -4,11 +4,14 @@
 #include <string>
 #include <string.h>
 #include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/stats.h>
 #include <unistd.h>
 #include <errno.h>
-#include <sys/types.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <dirent.h>
+#include <time.h>
 
 
 using namespace std;
@@ -19,13 +22,24 @@ using namespace std;
  *    * checking yourself.
  *     */
 
-int main()
+int main(int argc, char* argv[])
 {
-	    char *dirName = ".";
-	        DIR *dirp = opendir(dirName);
-		    dirent *direntp;
-		        while ((direntp = readdir(dirp)))
-				        cout << direntp->d_name << endl;  // use stat here to find attributes of file
-			    closedir(dirp);
+	if(argc != 1)					//if there are flags
+	{
+	}
+	else						//if there is only 'ls'
+	{
+	}
+
+	return 0;
+
+	char *dirName = ".";
+	DIR *dirp = opendir(dirName);
+	dirent *direntp;
+	while ((direntp = readdir(dirp)))
+	{
+		cout << direntp->d_name << endl;	// use stat here to find attributes of file
+	}		
+    	closedir(dirp);
 }
 
