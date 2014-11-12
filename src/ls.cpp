@@ -5,7 +5,7 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-#include <sys/stats.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
 #include <stdio.h>
@@ -46,39 +46,33 @@ int main(int argc, char* argv[])
 							//every possible combination of flags in v.at
 		for(int i = 0; i < v.size(); i++)	//loop through the vector to determine flags
 		{
-			if(v.at(i) == "-a")		//if flag is a
+			if(a_flag && l_flag && R_flag)
+			{
+				break;
+			}
+
+			if(strcmp(v.at(i), "-a") == 0)		//if flag is a
 			{
 				if(!a_flag)
 				{
 					a_flag = true;
 				}
 			}
-			else if(v.at(i) == "-l")	//if flag is l
+			else if(strcmp(v.at(i), "-l") == 0)	//if flag is l
 			{
 				if(!l_flag)
 				{
 					l_flag = true;
 				}
 			}
-			else if(v.at(i) == "-R")	//if flag is R
+			else if(strcmp(v.at(i), "-R") == 0)	//if flag is R
 			{
 				if(!R_flag)
 				{
 					R_flag = true;
 				}
 			}
-			else if(v.at(i) == "-al")	//if flag is al combo1
-			{
-				if(!a_flag)
-				{
-					a_flag = true;
-				}
-				if(!l_flag)
-				{
-					l_flag = true;
-				}
-			}
-			else if(v.at(i) == "-la")	//if flag is al combo2
+			else if(strcmp(v.at(i), "-al") == 0)	//if flag is al combo1
 			{
 				if(!a_flag)
 				{
@@ -89,7 +83,18 @@ int main(int argc, char* argv[])
 					l_flag = true;
 				}
 			}
-			else if(v.at(i) == "-aR")	//if flag is aR combo1
+			else if(strcmp(v.at(i) == "-la") == 0)	//if flag is al combo2
+			{
+				if(!a_flag)
+				{
+					a_flag = true;
+				}
+				if(!l_flag)
+				{
+					l_flag = true;
+				}
+			}
+			else if(strcmp(v.at(i), "-aR") == 0)	//if flag is aR combo1
 			{
 				if(!a_flag)
 				{
@@ -100,7 +105,7 @@ int main(int argc, char* argv[])
 					R_flag = true;
 				}
 			}
-			else if(v.at(i) == "-Ra")	//if flag is aR combo2
+			else if(strcmp(v.at(i), "-Ra") == 0)	//if flag is aR combo2
 			{
 				if(!a_flag)
 				{
@@ -111,7 +116,7 @@ int main(int argc, char* argv[])
 					R_flag = true;
 				}
 			}
-			else if(v.at(i) == "-lR")	//if flag is lR combo1
+			else if(strcmp(v.at(i), "-lR") == 0)	//if flag is lR combo1
 			{
 				if(!l_flag)
 				{
@@ -122,7 +127,7 @@ int main(int argc, char* argv[])
 					R_flag = true;
 				}
 			}
-			else if(v.at(i) == "-Rl")	//if flag is lR combo2
+			else if(strcmp(v.at(i), "-Rl") == 0)	//if flag is lR combo2
 			{
 				if(!l_flag)
 				{
@@ -133,22 +138,7 @@ int main(int argc, char* argv[])
 					R_flag = true;
 				}
 			}
-			else if(v.at(i) == "-alR")	//if flag is alR combo1
-			{
-				if(!a_flag)
-				{
-					a_flag = true;
-				}
-				if(!l_flag)
-				{
-					l_flag = true;
-				}
-				if(!R_flag)
-				{
-					R_flag = true;
-				}
-			}
-			else if(v.at(i) == "-lRa")	//if flag is alR combo2
+			else if(strcmp(v.at(i), "-alR") == 0)	//if flag is alR combo1
 			{
 				if(!a_flag)
 				{
@@ -163,7 +153,7 @@ int main(int argc, char* argv[])
 					R_flag = true;
 				}
 			}
-			else if(v.at(i) == "-Ral")	//if flag is alR combo3
+			else if(strcmp(v.at(i), "-lRa") == 0)	//if flag is alR combo2
 			{
 				if(!a_flag)
 				{
@@ -178,7 +168,7 @@ int main(int argc, char* argv[])
 					R_flag = true;
 				}
 			}
-			else if(v.at(i) == "-aRl")	//if flag is alR combo4
+			else if(strcmp(v.at(i), "-Ral") == 0)	//if flag is alR combo3
 			{
 				if(!a_flag)
 				{
@@ -193,7 +183,7 @@ int main(int argc, char* argv[])
 					R_flag = true;
 				}
 			}
-			else if(v.at(i) == "-laR")	//if flag is alR combo5
+			else if(strcmp(v.at(i), "-aRl") == 0)	//if flag is alR combo4
 			{
 				if(!a_flag)
 				{
@@ -208,7 +198,7 @@ int main(int argc, char* argv[])
 					R_flag = true;
 				}
 			}
-			else if(v.at(i) == "-Rla")	//if flag is alR combo6
+			else if(strcmp(v.at(i), "-laR") == 0)	//if flag is alR combo5
 			{
 				if(!a_flag)
 				{
@@ -223,7 +213,24 @@ int main(int argc, char* argv[])
 					R_flag = true;
 				}
 			}
-		}
+			else if(strcmp(v.at(i), "-Rla") == 0)	//if flag is alR combo6
+			{
+				if(!a_flag)
+				{
+					a_flag = true;
+				}
+				if(!l_flag)
+				{
+					l_flag = true;
+				}
+				if(!R_flag)
+				{
+					R_flag = true;
+				}
+			}
+		}					//end of for loop to check for flags
+
+		
 	}
 	else						//if there is only 'ls'
 	{
