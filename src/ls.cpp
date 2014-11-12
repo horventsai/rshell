@@ -92,6 +92,573 @@ void rForRec(char* rdirn)
 	}
 }
 
+
+void raForRecA(char* rdirn)
+{
+	vector<char*> v;
+	string base = rdirn;
+	char* dirn = rdirn;
+	DIR* dirp = opendir(dirn);
+	//dirent *direntp;
+	if(dirp != NULL)			//assume dirp does not return NULL
+	{
+		dirent *direntp;
+		while((direntp = readdir(dirp)))
+		{
+			if(errno != 0)		//error check for system call
+			{
+				perror("readdir");
+				exit(1);
+			}
+			/*
+			if(direntp->d_name[0] == '.')
+			{
+				continue;	//skip hidden files
+			}
+			*/
+			struct stat buf;
+			if(stat(dirn, &buf) == -1)
+			{
+				perror("stat");
+				exit(1);
+			}
+
+			char nextf[1024];
+			strcpy(nextf, dirn);
+			strcat(nextf, "/");
+			strcat(nextf, direntp->d_name);
+			cout << direntp->d_name << " ";
+
+			if(stat(nextf, &buf) == -1)
+			{
+				perror("stat");
+				exit(1);
+			}
+
+			if(S_ISDIR(buf.st_mode))
+			{
+				v.push_back(direntp->d_name);
+			}
+		}
+		cout << endl;
+
+		unsigned vsize = v.size();
+
+		for(unsigned i = 0; i < vsize; i++)
+		{
+			string next = (base+"/"+v.at(i));
+			char* n = new char[next.length() + 1];
+			strncpy(n, next.c_str(),next.length());
+			rForRec(n);
+		}
+
+		if(closedir(dirp) == -1)
+		{
+			perror("closedir");	//error check for system call
+			exit(1);
+		}
+
+		return;				//to get out of function for recursion
+	}
+	else					//error check for system call
+	{
+		perror("opendir");
+		exit(1);
+	}
+}
+
+
+void rlForRecL(char* rdirn)
+{
+	vector<char*> v;
+	string base = rdirn;
+	char* dirn = rdirn;
+	DIR* dirp = opendir(dirn);
+	//dirent *direntp;
+	if(dirp != NULL)			//assume dirp does not return NULL
+	{
+		dirent *direntp;
+		while((direntp = readdir(dirp)))
+		{
+			if(errno != 0)		//error check for system call
+			{
+				perror("readdir");
+				exit(1);
+			}
+
+			if(direntp->d_name[0] == '.')
+			{
+				continue;	//skip hidden files
+			}
+			struct stat buf;
+			if(stat(dirn, &buf) == -1)
+			{
+				perror("stat");
+				exit(1);
+			}
+
+			char nextf[1024];
+			strcpy(nextf, dirn);
+			strcat(nextf, "/");
+			strcat(nextf, direntp->d_name);
+			//below
+
+
+								//print filetype
+					if(S_ISREG(buf.st_mode))
+					{
+						cout << "-";	//regular file
+					}
+					else if(S_ISDIR(buf.st_mode))
+					{
+						cout << "d";	//directory
+					}
+					else if(S_ISCHR(buf.st_mode))
+					{
+						cout << "c";	//character device
+					}
+					else if(S_ISBLK(buf.st_mode))
+					{
+						cout << "b";	//block device
+					}
+					else if(S_ISFIFO(buf.st_mode))
+					{
+						cout << "p";	//named pipe
+					}
+					else if(S_ISLNK(buf.st_mode))
+					{
+						cout << "l";	//symbolic link
+					}
+					else if(S_ISSOCK(buf.st_mode))
+					{
+						cout << "s";	//socket
+					}
+
+								//user permissions
+					if(buf.st_mode & S_IRUSR)
+					{
+						cout << "r";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IWUSR)
+					{
+						cout << "w";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IXUSR)
+					{
+						cout << "x";
+					}
+					else
+					{
+						cout << "-";
+					}
+
+								//group permissions
+					if(buf.st_mode & S_IRGRP)
+					{
+						cout << "r";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IWGRP)
+					{
+						cout << "w";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IXGRP)
+					{
+						cout << "x";
+					}
+					else
+					{
+						cout << "-";
+					}
+
+								//general permissions
+					if(buf.st_mode & S_IROTH)
+					{
+						cout << "r";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IWOTH)
+					{
+						cout << "w";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IXOTH)
+					{
+						cout << "x";
+					}
+					else
+					{
+						cout << "-";
+					}
+
+					cout << " ";
+
+					cout << buf.st_nlink;	//number of hard links
+
+					cout << " ";
+
+								//user id
+					string uid;
+					uid = getpwuid(buf.st_uid)->pw_name;
+					if(errno != 0)
+					{
+						perror("uid");	//error check for system call
+						exit(1);
+					}
+
+								//group id
+					string gid;
+					gid = getgrgid(buf.st_gid)->gr_name;
+					if(errno != 0)
+					{
+						perror("gid");	//error check for system call
+						exit(1);
+					}
+
+					cout << uid;		//print user id
+				       
+					cout << " ";
+
+				       	cout << gid;		//print group id
+
+					cout << " ";
+
+					cout << buf.st_size;	//print size of file
+
+					cout << " ";
+
+								//get modified time
+					time_t modtime = buf.st_mtime;
+					struct tm time;
+
+					if(localtime_r(&modtime, &time) == NULL)
+					{
+						perror("time");	//error check for system call
+						exit(1);
+					}
+
+					char timeslots[512];
+					strftime(timeslots, sizeof(timeslots), "%h", &time);
+					cout << timeslots;	//print month abrev.
+					cout << " ";
+					strftime(timeslots, sizeof(timeslots), "%d", &time);
+					cout << timeslots;	//print date
+					cout << " ";
+					strftime(timeslots, sizeof(timeslots), "%R", &time);
+					cout << timeslots;	//print 24hr
+					cout << " ";
+
+
+			//above
+			cout << direntp->d_name;;
+			cout << endl;
+
+			if(stat(nextf, &buf) == -1)
+			{
+				perror("stat");
+				exit(1);
+			}
+
+			if(S_ISDIR(buf.st_mode))
+			{
+				v.push_back(direntp->d_name);
+			}
+		}
+		cout << endl;
+
+		unsigned vsize = v.size();
+
+		for(unsigned i = 0; i < vsize; i++)
+		{
+			string next = (base+"/"+v.at(i));
+			char* n = new char[next.length() + 1];
+			strncpy(n, next.c_str(),next.length());
+			rForRec(n);
+		}
+
+		if(closedir(dirp) == -1)
+		{
+			perror("closedir");	//error check for system call
+			exit(1);
+		}
+
+		return;				//to get out of function for recursion
+	}
+	else					//error check for system call
+	{
+		perror("opendir");
+		exit(1);
+	}
+}
+
+
+void rlaForRecLA(char* rdirn)
+{
+	vector<char*> v;
+	string base = rdirn;
+	char* dirn = rdirn;
+	DIR* dirp = opendir(dirn);
+	//dirent *direntp;
+	if(dirp != NULL)			//assume dirp does not return NULL
+	{
+		dirent *direntp;
+		while((direntp = readdir(dirp)))
+		{
+			if(errno != 0)		//error check for system call
+			{
+				perror("readdir");
+				exit(1);
+			}
+			
+			/*
+			if(direntp->d_name[0] == '.')
+			{
+				continue;	//skip hidden files
+			}
+			*/
+			struct stat buf;
+			if(stat(dirn, &buf) == -1)
+			{
+				perror("stat");
+				exit(1);
+			}
+
+			char nextf[1024];
+			strcpy(nextf, dirn);
+			strcat(nextf, "/");
+			strcat(nextf, direntp->d_name);
+			//below
+
+
+								//print filetype
+					if(S_ISREG(buf.st_mode))
+					{
+						cout << "-";	//regular file
+					}
+					else if(S_ISDIR(buf.st_mode))
+					{
+						cout << "d";	//directory
+					}
+					else if(S_ISCHR(buf.st_mode))
+					{
+						cout << "c";	//character device
+					}
+					else if(S_ISBLK(buf.st_mode))
+					{
+						cout << "b";	//block device
+					}
+					else if(S_ISFIFO(buf.st_mode))
+					{
+						cout << "p";	//named pipe
+					}
+					else if(S_ISLNK(buf.st_mode))
+					{
+						cout << "l";	//symbolic link
+					}
+					else if(S_ISSOCK(buf.st_mode))
+					{
+						cout << "s";	//socket
+					}
+
+								//user permissions
+					if(buf.st_mode & S_IRUSR)
+					{
+						cout << "r";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IWUSR)
+					{
+						cout << "w";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IXUSR)
+					{
+						cout << "x";
+					}
+					else
+					{
+						cout << "-";
+					}
+
+								//group permissions
+					if(buf.st_mode & S_IRGRP)
+					{
+						cout << "r";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IWGRP)
+					{
+						cout << "w";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IXGRP)
+					{
+						cout << "x";
+					}
+					else
+					{
+						cout << "-";
+					}
+
+								//general permissions
+					if(buf.st_mode & S_IROTH)
+					{
+						cout << "r";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IWOTH)
+					{
+						cout << "w";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IXOTH)
+					{
+						cout << "x";
+					}
+					else
+					{
+						cout << "-";
+					}
+
+					cout << " ";
+
+					cout << buf.st_nlink;	//number of hard links
+
+					cout << " ";
+
+								//user id
+					string uid;
+					uid = getpwuid(buf.st_uid)->pw_name;
+					if(errno != 0)
+					{
+						perror("uid");	//error check for system call
+						exit(1);
+					}
+
+								//group id
+					string gid;
+					gid = getgrgid(buf.st_gid)->gr_name;
+					if(errno != 0)
+					{
+						perror("gid");	//error check for system call
+						exit(1);
+					}
+
+					cout << uid;		//print user id
+				       
+					cout << " ";
+
+				       	cout << gid;		//print group id
+
+					cout << " ";
+
+					cout << buf.st_size;	//print size of file
+
+					cout << " ";
+
+								//get modified time
+					time_t modtime = buf.st_mtime;
+					struct tm time;
+
+					if(localtime_r(&modtime, &time) == NULL)
+					{
+						perror("time");	//error check for system call
+						exit(1);
+					}
+
+					char timeslots[512];
+					strftime(timeslots, sizeof(timeslots), "%h", &time);
+					cout << timeslots;	//print month abrev.
+					cout << " ";
+					strftime(timeslots, sizeof(timeslots), "%d", &time);
+					cout << timeslots;	//print date
+					cout << " ";
+					strftime(timeslots, sizeof(timeslots), "%R", &time);
+					cout << timeslots;	//print 24hr
+					cout << " ";
+
+
+			//above
+			cout << direntp->d_name;;
+			cout << endl;
+
+			if(stat(nextf, &buf) == -1)
+			{
+				perror("stat");
+				exit(1);
+			}
+
+			if(S_ISDIR(buf.st_mode))
+			{
+				v.push_back(direntp->d_name);
+			}
+		}
+		cout << endl;
+
+		unsigned vsize = v.size();
+
+		for(unsigned i = 0; i < vsize; i++)
+		{
+			string next = (base+"/"+v.at(i));
+			char* n = new char[next.length() + 1];
+			strncpy(n, next.c_str(),next.length());
+			rForRec(n);
+		}
+
+		if(closedir(dirp) == -1)
+		{
+			perror("closedir");	//error check for system call
+			exit(1);
+		}
+
+		return;				//to get out of function for recursion
+	}
+	else					//error check for system call
+	{
+		perror("opendir");
+		exit(1);
+	}
+}
+
 /*
  *  * This is a BARE BONES example of how to use opendir/readdir/closedir.  Notice
  *   * that there is no error checking on these functions.  You MUST add error 
@@ -645,15 +1212,227 @@ int main(int argc, char* argv[])
 		}
 		else if(a_flag && l_flag && !R_flag)	//only al flag is active
 		{
+
+			//dirn = ".";
+			DIR* dirp = opendir(dirn);
+			//dirent *direntp;
+			if(dirp != NULL)			//assume dirp does not return NULL
+			{
+				dirent *direntp;
+				while((direntp = readdir(dirp)))
+				{
+					if(errno != 0)		//error check for system call
+					{
+						perror("readdir");
+						exit(1);
+					}
+					/*
+					if(direntp->d_name[0] == '.')
+					{
+						continue;	//skip hidden files
+					}
+					*/
+					struct stat buf;
+					if(stat(dirn, &buf) == -1)
+					{
+						perror("stat");
+						exit(1);
+					}
+
+								//print filetype
+					if(S_ISREG(buf.st_mode))
+					{
+						cout << "-";	//regular file
+					}
+					else if(S_ISDIR(buf.st_mode))
+					{
+						cout << "d";	//directory
+					}
+					else if(S_ISCHR(buf.st_mode))
+					{
+						cout << "c";	//character device
+					}
+					else if(S_ISBLK(buf.st_mode))
+					{
+						cout << "b";	//block device
+					}
+					else if(S_ISFIFO(buf.st_mode))
+					{
+						cout << "p";	//named pipe
+					}
+					else if(S_ISLNK(buf.st_mode))
+					{
+						cout << "l";	//symbolic link
+					}
+					else if(S_ISSOCK(buf.st_mode))
+					{
+						cout << "s";	//socket
+					}
+
+								//user permissions
+					if(buf.st_mode & S_IRUSR)
+					{
+						cout << "r";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IWUSR)
+					{
+						cout << "w";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IXUSR)
+					{
+						cout << "x";
+					}
+					else
+					{
+						cout << "-";
+					}
+
+								//group permissions
+					if(buf.st_mode & S_IRGRP)
+					{
+						cout << "r";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IWGRP)
+					{
+						cout << "w";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IXGRP)
+					{
+						cout << "x";
+					}
+					else
+					{
+						cout << "-";
+					}
+
+								//general permissions
+					if(buf.st_mode & S_IROTH)
+					{
+						cout << "r";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IWOTH)
+					{
+						cout << "w";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IXOTH)
+					{
+						cout << "x";
+					}
+					else
+					{
+						cout << "-";
+					}
+
+					cout << " ";
+
+					cout << buf.st_nlink;	//number of hard links
+
+					cout << " ";
+
+								//user id
+					string uid;
+					uid = getpwuid(buf.st_uid)->pw_name;
+					if(errno != 0)
+					{
+						perror("uid");	//error check for system call
+						exit(1);
+					}
+
+								//group id
+					string gid;
+					gid = getgrgid(buf.st_gid)->gr_name;
+					if(errno != 0)
+					{
+						perror("gid");	//error check for system call
+						exit(1);
+					}
+
+					cout << uid;		//print user id
+				       
+					cout << " ";
+
+				       	cout << gid;		//print group id
+
+					cout << " ";
+
+					cout << buf.st_size;	//print size of file
+
+					cout << " ";
+
+								//get modified time
+					time_t modtime = buf.st_mtime;
+					struct tm time;
+
+					if(localtime_r(&modtime, &time) == NULL)
+					{
+						perror("time");	//error check for system call
+						exit(1);
+					}
+
+					char timeslots[512];
+					strftime(timeslots, sizeof(timeslots), "%h", &time);
+					cout << timeslots;	//print month abrev.
+					cout << " ";
+					strftime(timeslots, sizeof(timeslots), "%d", &time);
+					cout << timeslots;	//print date
+					cout << " ";
+					strftime(timeslots, sizeof(timeslots), "%R", &time);
+					cout << timeslots;	//print 24hr
+					cout << " ";
+
+					cout << direntp->d_name << " ";
+					cout << endl;
+				}
+				cout << endl;
+				if(closedir(dirp) == -1)
+				{
+					perror("closedir");	//error check for system call
+					exit(1);
+				}
+			}
+			else					//error check for system call
+			{
+				perror("opendir");
+				exit(1);
+			}
 		}
 		else if(a_flag && !l_flag && R_flag)	//only aR flag is active
 		{
+			raForRecA(dirn);
 		}
 		else if(!a_flag && l_flag && R_flag)	//only lR flag is active
 		{
+
+			rlForRecL(dirn);
 		}
 		else if(a_flag && l_flag && R_flag)	//all alR flags are active
 		{
+
+			rlaForRecLA(dirn);
 		}
 							//end of flac controls/commands
 	}
