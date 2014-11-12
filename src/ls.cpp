@@ -270,6 +270,10 @@ int main(int argc, char* argv[])
 			dirent *direntp;
 			while((direntp = readdir(dirp)))
 			{
+				if(errno != 0)		//error check for system call
+				{
+					perror("readdir");
+				}
 				cout << direntp->d_name << endl;
 			}
 		}
