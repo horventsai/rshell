@@ -274,7 +274,22 @@ int main(int argc, char* argv[])
 				{
 					perror("readdir");
 				}
-				cout << direntp->d_name << endl;
+
+				if(direntp->d_name[0] == '.')
+				{
+					continue;	//skip hidden files
+				}
+				struct stat buf;
+				if(stat(dirn, &buf) == -1)
+				{
+					perror("stat");
+				}
+				cout << direntp->d_name << " ";
+			}
+			cout << endl;
+			if(closedir(dipr) == -1)
+			{
+				perror("closedir");	//error check for system call
 			}
 		}
 		else					//error check for system call
