@@ -19,6 +19,79 @@
 
 using namespace std;
 
+void rForRec(char* rdirn)
+{
+	vector<char*> v;
+	string base = rdirn;
+	char* dirn = rdirn;
+	DIR* dirp = opendir(dirn);
+	//dirent *direntp;
+	if(dirp != NULL)			//assume dirp does not return NULL
+	{
+		dirent *direntp;
+		while((direntp = readdir(dirp)))
+		{
+			if(errno != 0)		//error check for system call
+			{
+				perror("readdir");
+				exit(1);
+			}
+
+			if(direntp->d_name[0] == '.')
+			{
+				continue;	//skip hidden files
+			}
+			struct stat buf;
+			if(stat(dirn, &buf) == -1)
+			{
+				perror("stat");
+				exit(1);
+			}
+
+			char nextf[1024];
+			strcpy(nextf, dirn);
+			strcat(nextf, "/");
+			strcat(nextf, direntp->d_name);
+			cout << direntp->d_name << " ";
+
+			if(stat(nextf, &buf) == -1)
+			{
+				perror("stat");
+				exit(1);
+			}
+
+			if(S_ISDIR(buf.st_mode))
+			{
+				v.push_back(direntp->d_name);
+			}
+		}
+		cout << endl;
+
+		unsigned vsize = v.size();
+
+		for(unsigned i = 0; i < vsize; i++)
+		{
+			string next = (base+"/"+v.at(i));
+			char* n = new char[next.length() + 1];
+			strncpy(n, next.c_str(),next.length());
+			rForRec(n);
+		}
+
+		if(closedir(dirp) == -1)
+		{
+			perror("closedir");	//error check for system call
+			exit(1);
+		}
+
+		return;				//to get out of function for recursion
+	}
+	else					//error check for system call
+	{
+		perror("opendir");
+		exit(1);
+	}
+}
+
 /*
  *  * This is a BARE BONES example of how to use opendir/readdir/closedir.  Notice
  *   * that there is no error checking on these functions.  You MUST add error 
@@ -528,6 +601,7 @@ int main(int argc, char* argv[])
 		else if(!a_flag && !l_flag && R_flag)	//only R flag is active
 		{
 								//needs function call b/c recursion
+			rForRec(dirn);
 			/*
 			//dirn = ".";
 			DIR* dirp = opendir(dirn);
