@@ -254,6 +254,7 @@ int main(int argc, char* argv[])
 					if(errno != 0)		//error check for system call
 					{
 						perror("readdir");
+						exit(1);
 					}
 
 					if(direntp->d_name[0] == '.')
@@ -264,6 +265,7 @@ int main(int argc, char* argv[])
 					if(stat(dirn, &buf) == -1)
 					{
 						perror("stat");
+						exit(1);
 					}
 					cout << direntp->d_name << " ";
 				}
@@ -271,6 +273,7 @@ int main(int argc, char* argv[])
 				if(closedir(dirp) == -1)
 				{
 					perror("closedir");	//error check for system call
+					exit(1);
 				}
 			}
 			else					//error check for system call
@@ -291,11 +294,13 @@ int main(int argc, char* argv[])
 					if(errno != 0)		//error check for system call
 					{
 						perror("readdir");
+						exit(1);
 					}
 					struct stat buf;
 					if(stat(dirn, &buf) == -1)
 					{
 						perror("stat");
+						exit(1);
 					}
 					cout << direntp->d_name << " ";
 				}
@@ -303,6 +308,7 @@ int main(int argc, char* argv[])
 				if(closedir(dirp) == -1)
 				{
 					perror("closedir");	//error check for system call
+					exit(1);
 				}
 			}
 			else					//error check for system call
@@ -324,6 +330,7 @@ int main(int argc, char* argv[])
 					if(errno != 0)		//error check for system call
 					{
 						perror("readdir");
+						exit(1);
 					}
 
 					if(direntp->d_name[0] == '.')
@@ -334,6 +341,7 @@ int main(int argc, char* argv[])
 					if(stat(dirn, &buf) == -1)
 					{
 						perror("stat");
+						exit(1);
 					}
 
 								//print filetype
@@ -456,6 +464,7 @@ int main(int argc, char* argv[])
 					if(errno != 0)
 					{
 						perror("uid");	//error check for system call
+						exit(1);
 					}
 
 								//group id
@@ -464,6 +473,7 @@ int main(int argc, char* argv[])
 					if(errno != 0)
 					{
 						perror("gid");	//error check for system call
+						exit(1);
 					}
 
 					cout << uid;		//print user id
@@ -485,6 +495,7 @@ int main(int argc, char* argv[])
 					if(localtime_r(&modtime, &time) == NULL)
 					{
 						perror("time");	//error check for system call
+						exit(1);
 					}
 
 					char timeslots[512];
@@ -505,6 +516,7 @@ int main(int argc, char* argv[])
 				if(closedir(dirp) == -1)
 				{
 					perror("closedir");	//error check for system call
+					exit(1);
 				}
 			}
 			else					//error check for system call
@@ -515,6 +527,47 @@ int main(int argc, char* argv[])
 		}
 		else if(!a_flag && !l_flag && R_flag)	//only R flag is active
 		{
+								//needs function call b/c recursion
+			/*
+			//dirn = ".";
+			DIR* dirp = opendir(dirn);
+			//dirent *direntp;
+			if(dirp != NULL)			//assume dirp does not return NULL
+			{
+				dirent *direntp;
+				while((direntp = readdir(dirp)))
+				{
+					if(errno != 0)		//error check for system call
+					{
+						perror("readdir");
+						exit(1);
+					}
+
+					if(direntp->d_name[0] == '.')
+					{
+						continue;	//skip hidden files
+					}
+					struct stat buf;
+					if(stat(dirn, &buf) == -1)
+					{
+						perror("stat");
+						exit(1);
+					}
+					cout << direntp->d_name << " ";
+				}
+				cout << endl;
+				if(closedir(dirp) == -1)
+				{
+					perror("closedir");	//error check for system call
+					exit(1);
+				}
+			}
+			else					//error check for system call
+			{
+				perror("opendir");
+				exit(1);
+			}
+			*/
 		}
 		else if(a_flag && l_flag && !R_flag)	//only al flag is active
 		{
@@ -543,6 +596,7 @@ int main(int argc, char* argv[])
 				if(errno != 0)		//error check for system call
 				{
 					perror("readdir");
+					exit(1);
 				}
 
 				if(direntp->d_name[0] == '.')
@@ -553,6 +607,7 @@ int main(int argc, char* argv[])
 				if(stat(dirn, &buf) == -1)
 				{
 					perror("stat");
+					exit(1);
 				}
 				cout << direntp->d_name << " ";
 			}
@@ -560,6 +615,7 @@ int main(int argc, char* argv[])
 			if(closedir(dirp) == -1)
 			{
 				perror("closedir");	//error check for system call
+				exit(1);
 			}
 		}
 		else					//error check for system call
