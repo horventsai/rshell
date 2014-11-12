@@ -42,20 +42,186 @@ int main(int argc, char* argv[])
 
 		int vsize = v.size();			//declares and sets variable for vector size
 							//after vector is "filled"
-		
+
+							//every possible combination of flags in v.at
 		for(int i = 0; i < v.size(); i++)	//loop through the vector to determine flags
 		{
-			if(v.at(i) == 'a')
+			if(v.at(i) == "-a")		//if flag is a
 			{
-				a_flag = true;
+				if(!a_flag)
+				{
+					a_flag = true;
+				}
 			}
-			else if(v.at(i) == 'l')
+			else if(v.at(i) == "-l")	//if flag is l
 			{
-				l_flag = true;
+				if(!l_flag)
+				{
+					l_flag = true;
+				}
 			}
-			else if(v.at(i) == 'R')
+			else if(v.at(i) == "-R")	//if flag is R
 			{
-				R_flag = true;
+				if(!R_flag)
+				{
+					R_flag = true;
+				}
+			}
+			else if(v.at(i) == "-al")	//if flag is al combo1
+			{
+				if(!a_flag)
+				{
+					a_flag = true;
+				}
+				if(!l_flag)
+				{
+					l_flag = true;
+				}
+			}
+			else if(v.at(i) == "-la")	//if flag is al combo2
+			{
+				if(!a_flag)
+				{
+					a_flag = true;
+				}
+				if(!l_flag)
+				{
+					l_flag = true;
+				}
+			}
+			else if(v.at(i) == "-aR")	//if flag is aR combo1
+			{
+				if(!a_flag)
+				{
+					a_flag = true;
+				}
+				if(!R_flag)
+				{
+					R_flag = true;
+				}
+			}
+			else if(v.at(i) == "-Ra")	//if flag is aR combo2
+			{
+				if(!a_flag)
+				{
+					a_flag = true;
+				}
+				if(!R_flag)
+				{
+					R_flag = true;
+				}
+			}
+			else if(v.at(i) == "-lR")	//if flag is lR combo1
+			{
+				if(!l_flag)
+				{
+					l_flag = true;
+				}
+				if(!R_flag)
+				{
+					R_flag = true;
+				}
+			}
+			else if(v.at(i) == "-Rl")	//if flag is lR combo2
+			{
+				if(!l_flag)
+				{
+					l_flag = true;
+				}
+				if(!R_flag)
+				{
+					R_flag = true;
+				}
+			}
+			else if(v.at(i) == "-alR")	//if flag is alR combo1
+			{
+				if(!a_flag)
+				{
+					a_flag = true;
+				}
+				if(!l_flag)
+				{
+					l_flag = true;
+				}
+				if(!R_flag)
+				{
+					R_flag = true;
+				}
+			}
+			else if(v.at(i) == "-lRa")	//if flag is alR combo2
+			{
+				if(!a_flag)
+				{
+					a_flag = true;
+				}
+				if(!l_flag)
+				{
+					l_flag = true;
+				}
+				if(!R_flag)
+				{
+					R_flag = true;
+				}
+			}
+			else if(v.at(i) == "-Ral")	//if flag is alR combo3
+			{
+				if(!a_flag)
+				{
+					a_flag = true;
+				}
+				if(!l_flag)
+				{
+					l_flag = true;
+				}
+				if(!R_flag)
+				{
+					R_flag = true;
+				}
+			}
+			else if(v.at(i) == "-aRl")	//if flag is alR combo4
+			{
+				if(!a_flag)
+				{
+					a_flag = true;
+				}
+				if(!l_flag)
+				{
+					l_flag = true;
+				}
+				if(!R_flag)
+				{
+					R_flag = true;
+				}
+			}
+			else if(v.at(i) == "-laR")	//if flag is alR combo5
+			{
+				if(!a_flag)
+				{
+					a_flag = true;
+				}
+				if(!l_flag)
+				{
+					l_flag = true;
+				}
+				if(!R_flag)
+				{
+					R_flag = true;
+				}
+			}
+			else if(v.at(i) == "-Rla")	//if flag is alR combo6
+			{
+				if(!a_flag)
+				{
+					a_flag = true;
+				}
+				if(!l_flag)
+				{
+					l_flag = true;
+				}
+				if(!R_flag)
+				{
+					R_flag = true;
+				}
 			}
 		}
 	}
