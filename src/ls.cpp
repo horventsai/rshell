@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
 							//after vector is "filled"
 
 							//every possible combination of flags in v.at
-		for(int i = 0; i < v.size(); i++)	//loop through the vector to determine flags
+		for(int i = 0; i < vsize; i++)		//loop through the vector to determine flags
 		{
 			/*
 			if(a_flag && l_flag && R_flag)
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
 					l_flag = true;
 				}
 			}
-			else if(strcmp(v.at(i) == "-la") == 0)	//if flag is al combo2
+			else if(strcmp(v.at(i), "-la") == 0)	//if flag is al combo2
 			{
 				if(!a_flag)
 				{
@@ -237,7 +237,10 @@ int main(int argc, char* argv[])
 		}					//end of for loop to check for flags
 
 							//execute flag controls/commands
-		if(a_flag && !l_flag && !R_flag)	//only a flag is active
+		if(!a_flag && !l_flag && !R_flag)	//all flags are inactive
+		{
+		}
+		else if(a_flag && !l_flag && !R_flag)	//only a flag is active
 		{
 		}
 		else if(!a_flag && l_flag && !R_flag)	//only l flag is active
@@ -287,7 +290,7 @@ int main(int argc, char* argv[])
 				cout << direntp->d_name << " ";
 			}
 			cout << endl;
-			if(closedir(dipr) == -1)
+			if(closedir(dirp) == -1)
 			{
 				perror("closedir");	//error check for system call
 			}
