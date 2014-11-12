@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 		bool a_flag = false;
 		bool l_flag = false;
 		bool R_flag = false;
-		char* dirn;
+		char* dirn = ".";
 
 		for(int i = 1; i < argc; i++)
 		{
@@ -232,7 +232,10 @@ int main(int argc, char* argv[])
 			}
 			else
 			{
-				dirn = v.at(i);
+				if(argc > 1)
+				{
+					dirn = v.at(i);
+				}
 			}
 		}					//end of for loop to check for flags
 
@@ -242,6 +245,35 @@ int main(int argc, char* argv[])
 		}
 		else if(a_flag && !l_flag && !R_flag)	//only a flag is active
 		{
+			DIR* dirp = opendir(dirn);
+			//dirent *direntp;
+			if(dirp != NULL)			//assume dirp does not return NULL
+			{
+				dirent *direntp;
+				while((direntp = readdir(dirp)))
+				{
+					if(errno != 0)		//error check for system call
+					{
+						perror("readdir");
+					}
+					struct stat buf;
+					if(stat(dirn, &buf) == -1)
+					{
+						perror("stat");
+					}
+					cout << direntp->d_name << " ";
+				}
+				cout << endl;
+				if(closedir(dirp) == -1)
+				{
+					perror("closedir");	//error check for system call
+				}
+			}
+			else					//error check for system call
+			{
+				perror("opendir");
+				exit(1);
+			}
 		}
 		else if(!a_flag && l_flag && !R_flag)	//only l flag is active
 		{
