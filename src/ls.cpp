@@ -12,6 +12,8 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include <time.h>
+#include <fcntl.h>					//used for file control on the -l flag
+
 
 
 using namespace std;
@@ -31,9 +33,10 @@ int main(int argc, char* argv[])
 	{
 		char* dirn = ".";
 		DIR* dirp = opendir(dirn);
-		dirent = *direntp;
+		//dirent *direntp;
 		if(dirp != NULL)			//assume dirp does not return NULL
 		{
+			dirent *direntp;
 			while((direntp = readdir(dirp)))
 			{
 				cout << direntp->d_name << endl;
