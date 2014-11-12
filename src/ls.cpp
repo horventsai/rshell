@@ -28,6 +28,36 @@ int main(int argc, char* argv[])
 {
 	if(argc != 1)					//if there are flags
 	{
+							//declared variables
+		vector<char*> v;			//create vector to parse flags and commands
+		bool a_flag = false;
+		bool l_flag = false;
+		bool R_flag = false;
+
+
+		for(int i = 1; i < argc; i++)
+		{
+			v.push_back(argv[i]);		//pushes commands flags and such into vector
+		}
+
+		int vsize = v.size();			//declares and sets variable for vector size
+							//after vector is "filled"
+		
+		for(int i = 0; i < v.size(); i++)	//loop through the vector to determine flags
+		{
+			if(v.at(i) == 'a')
+			{
+				a_flag = true;
+			}
+			else if(v.at(i) == 'l')
+			{
+				l_flag = true;
+			}
+			else if(v.at(i) == 'R')
+			{
+				R_flag = true;
+			}
+		}
 	}
 	else						//if there is only 'ls'
 	{
