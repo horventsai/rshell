@@ -13,7 +13,8 @@
 #include <dirent.h>
 #include <time.h>
 #include <fcntl.h>					//used for file control on the -l flag
-
+#include <pwd.h>
+#include <grp.h>
 
 
 using namespace std;
@@ -356,7 +357,7 @@ int main(int argc, char* argv[])
 					{
 						cout << "p";	//named pipe
 					}
-					else if(S_ISLINK(buf.st_mode))
+					else if(S_ISLNK(buf.st_mode))
 					{
 						cout << "l";	//symbolic link
 					}
