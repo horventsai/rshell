@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
 		{
 			if(a_flag && l_flag && R_flag)
 			{
-				break;
+				break;				//exit loop if all flags are true
 			}
 
 			if(strcmp(v.at(i), "-a") == 0)		//if flag is a
@@ -230,7 +230,10 @@ int main(int argc, char* argv[])
 			}
 		}					//end of for loop to check for flags
 
-		
+							//execute flag controls
+		if(a_flag && !l_flag && !R_flag)
+		{
+		}
 	}
 	else						//if there is only 'ls'
 	{
@@ -254,6 +257,8 @@ int main(int argc, char* argv[])
 
 	return 0;
 
+							//sample code given to us by specs
+	/*
 	char *dirName = ".";
 	DIR *dirp = opendir(dirName);
 	dirent *direntp;
@@ -262,5 +267,6 @@ int main(int argc, char* argv[])
 		cout << direntp->d_name << endl;	// use stat here to find attributes of file
 	}		
     	closedir(dirp);
+	*/
 }
 
