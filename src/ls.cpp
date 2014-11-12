@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 		bool a_flag = false;
 		bool l_flag = false;
 		bool R_flag = false;
-
+		char* dirn;
 
 		for(int i = 1; i < argc; i++)
 		{
@@ -230,12 +230,35 @@ int main(int argc, char* argv[])
 					R_flag = true;
 				}
 			}
+			else
+			{
+				dirn = v.at(i);
+			}
 		}					//end of for loop to check for flags
 
-							//execute flag controls
-		if(a_flag && !l_flag && !R_flag)
+							//execute flag controls/commands
+		if(a_flag && !l_flag && !R_flag)	//only a flag is active
 		{
 		}
+		else if(!a_flag && l_flag && !R_flag)	//only l flag is active
+		{
+		}
+		else if(!a_flag && !l_flag && R_flag)	//only R flag is active
+		{
+		}
+		else if(a_flag && l_flag && !R_flag)	//only al flag is active
+		{
+		}
+		else if(a_flag && !l_flag && R_flag)	//only aR flag is active
+		{
+		}
+		else if(!a_flag && l_flag && R_flag)	//only lR flag is active
+		{
+		}
+		else if(a_flag && l_flag && R_flag)	//all alR flags are active
+		{
+		}
+							//end of flac controls/commands
 	}
 	else						//if there is only 'ls'
 	{
