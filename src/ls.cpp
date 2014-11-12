@@ -46,10 +46,12 @@ int main(int argc, char* argv[])
 							//every possible combination of flags in v.at
 		for(int i = 0; i < v.size(); i++)	//loop through the vector to determine flags
 		{
+			/*
 			if(a_flag && l_flag && R_flag)
 			{
 				break;				//exit loop if all flags are true
 			}
+			*/
 
 			if(strcmp(v.at(i), "-a") == 0)		//if flag is a
 			{
