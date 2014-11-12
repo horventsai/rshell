@@ -242,6 +242,41 @@ int main(int argc, char* argv[])
 							//execute flag controls/commands
 		if(!a_flag && !l_flag && !R_flag)	//all flags are inactive
 		{
+			//dirn = ".";
+			DIR* dirp = opendir(dirn);
+			//dirent *direntp;
+			if(dirp != NULL)			//assume dirp does not return NULL
+			{
+				dirent *direntp;
+				while((direntp = readdir(dirp)))
+				{
+					if(errno != 0)		//error check for system call
+					{
+						perror("readdir");
+					}
+
+					if(direntp->d_name[0] == '.')
+					{
+						continue;	//skip hidden files
+					}
+					struct stat buf;
+					if(stat(dirn, &buf) == -1)
+					{
+						perror("stat");
+					}
+					cout << direntp->d_name << " ";
+				}
+				cout << endl;
+				if(closedir(dirp) == -1)
+				{
+					perror("closedir");	//error check for system call
+				}
+			}
+			else					//error check for system call
+			{
+				perror("opendir");
+				exit(1);
+			}
 		}
 		else if(a_flag && !l_flag && !R_flag)	//only a flag is active
 		{
@@ -277,6 +312,205 @@ int main(int argc, char* argv[])
 		}
 		else if(!a_flag && l_flag && !R_flag)	//only l flag is active
 		{
+			//dirn = ".";
+			DIR* dirp = opendir(dirn);
+			//dirent *direntp;
+			if(dirp != NULL)			//assume dirp does not return NULL
+			{
+				dirent *direntp;
+				while((direntp = readdir(dirp)))
+				{
+					if(errno != 0)		//error check for system call
+					{
+						perror("readdir");
+					}
+
+					if(direntp->d_name[0] == '.')
+					{
+						continue;	//skip hidden files
+					}
+					struct stat buf;
+					if(stat(dirn, &buf) == -1)
+					{
+						perror("stat");
+					}
+
+								//print filetype
+					if(S_ISREG(buf.st_mode))
+					{
+						cout << "-";	//regular file
+					}
+					else if(S_ISDIR(buf.st_mode))
+					{
+						cout << "d";	//directory
+					}
+					else if(S_ISCHR(buf.st_mode))
+					{
+						cout << "c";	//character device
+					}
+					else if(S_ISBLK(buf.st_mode))
+					{
+						cout << "b";	//block device
+					}
+					else if(S_ISFIFO(buf.st_mode))
+					{
+						cout << "p";	//named pipe
+					}
+					else if(S_ISLINK(buf.st_mode))
+					{
+						cout << "l";	//symbolic link
+					}
+					else if(S_ISSOCK(buf.st_mode))
+					{
+						cout << "s";	//socket
+					}
+
+								//user permissions
+					if(buf.st_mode & S_IRUSR)
+					{
+						cout << "r";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IWUSR)
+					{
+						cout << "w";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IXUSR)
+					{
+						cout << "x";
+					}
+					else
+					{
+						cout << "-";
+					}
+
+								//group permissions
+					if(buf.st_mode & S_IRGRP)
+					{
+						cout << "r";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IWGRP)
+					{
+						cout << "w";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IXGRP)
+					{
+						cout << "x";
+					}
+					else
+					{
+						cout << "-";
+					}
+
+								//general permissions
+					if(buf.st_mode & S_IROTH)
+					{
+						cout << "r";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IWOTH)
+					{
+						cout << "w";
+					}
+					else
+					{
+						cout << "-";
+					}
+					if(buf.st_mode & S_IXOTH)
+					{
+						cout << "x";
+					}
+					else
+					{
+						cout << "-";
+					}
+
+					cout << " ";
+
+					cout << buf.st_nlink;	//number of hard links
+
+					cout << " ";
+
+								//user id
+					string uid;
+					uid = getpwuid(buf.st_uid)->pw_name;
+					if(errno != 0)
+					{
+						perror("uid");	//error check for system call
+					}
+
+								//group id
+					string gid;
+					gid = getgrgid(buf.st_gid)->gr_name;
+					if(errno != 0)
+					{
+						perror("gid");	//error check for system call
+					}
+
+					cout << uid;		//print user id
+				       
+					cout << " ";
+
+				       	cout << gid;		//print group id
+
+					cout << " ";
+
+					cout << buf.st_size;	//print size of file
+
+					cout << " ";
+
+								//get modified time
+					time_t modtime = buf.st_mtime;
+					struct tm time;
+
+					if(localtime_r(&modtime, &time) == NULL)
+					{
+						perror("time");	//error check for system call
+					}
+
+					char timeslots[512];
+					strftime(timeslots, sizeof(timeslots), "%h", &time);
+					cout << timeslots;	//print month abrev.
+					cout << " ";
+					strftime(timeslots, sizeof(timeslots), "%d", &time);
+					cout << timeslots;	//print date
+					cout << " ";
+					strftime(timeslots, sizeof(timeslots), "%R", &time);
+					cout << timeslots;	//print 24hr
+					cout << " ";
+
+					cout << direntp->d_name << " ";
+					cout << endl;
+				}
+				cout << endl;
+				if(closedir(dirp) == -1)
+				{
+					perror("closedir");	//error check for system call
+				}
+			}
+			else					//error check for system call
+			{
+				perror("opendir");
+				exit(1);
+			}
 		}
 		else if(!a_flag && !l_flag && R_flag)	//only R flag is active
 		{
