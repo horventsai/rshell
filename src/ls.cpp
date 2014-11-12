@@ -197,12 +197,7 @@ void rlForRecL(char* rdirn)
 				exit(1);
 			}
 
-			char nextf[1024];
-			strcpy(nextf, dirn);
-			strcat(nextf, "/");
-			strcat(nextf, direntp->d_name);
 			//below
-
 
 								//print filetype
 					if(S_ISREG(buf.st_mode))
@@ -368,10 +363,14 @@ void rlForRecL(char* rdirn)
 					strftime(timeslots, sizeof(timeslots), "%R", &time);
 					cout << timeslots;	//print 24hr
 					cout << " ";
-
-
 			//above
-			cout << direntp->d_name;;
+
+			char nextf[1024];
+			strcpy(nextf, dirn);
+			strcat(nextf, "/");
+			strcat(nextf, direntp->d_name);
+
+			cout << direntp->d_name;
 			cout << endl;
 
 			if(stat(nextf, &buf) == -1)
