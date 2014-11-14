@@ -673,7 +673,10 @@ int main(int argc, char* argv[])
 		bool a_flag = false;
 		bool l_flag = false;
 		bool R_flag = false;
-		char* dirn = ".";
+		string add = ".";
+		char* dirn = new char[add.length() + 1];
+		strncpy(dirn, add.c_str(),add.length());
+		//char* dirn = ".";
 
 		for(int i = 1; i < argc; i++)
 		{
@@ -1437,7 +1440,10 @@ int main(int argc, char* argv[])
 	}
 	else						//if there is only 'ls'
 	{
-		char* dirn = ".";
+		string add = ".";
+		char* dirn = new char[add.length() + 1];
+		strncpy(dirn, add.c_str(),add.length());
+		//char* dirn = ".";
 		DIR* dirp = opendir(dirn);
 		//dirent *direntp;
 		if(dirp != NULL)			//assume dirp does not return NULL
