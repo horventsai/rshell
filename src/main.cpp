@@ -159,10 +159,11 @@ int main()
 		char command[MAX_CAP];					//used for user input, for the initial holding before parse
 		char *pch;						//for strtok tokens(pointer)
 		char name[MAX_CAP];					//used for gethostname
-		bool pipe = false;					//boolean for piping
-		bool larrow = false;
-		bool rarrow = false;
-		bool drarrow = false;
+		bool pipe = false;					//boolean for piping |
+		bool larrow = false;					//boolean for left arrow <
+		bool rarrow = false;					//boolean for right arrow >
+		bool drarrow = false;					//boolean for double right arrow >>
+		bool tlarrow = false;					//boolean for triple left arrow <<<
 
 									//ERROR CHECKING FOR PROMPT
 		char *pid_ln = getlogin();				//error check for getlogin()
@@ -223,7 +224,7 @@ int main()
 			int pid_f = fork();				//error check for system call:fork()
 			if(pid_f == 0)					//CHILD
 			{
-				if(!pipe)
+				if(!pipe && !larrow && !rarrow && !drarrow && !tlarrow)
 				{
 					//begin commands here
 					if(execvp(arg[0], arg) == -1)	//error check for system call:execvp()
