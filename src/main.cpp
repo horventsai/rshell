@@ -21,6 +21,7 @@ using namespace std;
 								//HELPER PROTOTYPES
 void piping(char **before, char **after);
 void prepiping(char **parg, bool pipe);
+void depipe(char **args);
 								//HELPER FUNCTIONS
 void piping(char **before, char **after)
 {
@@ -67,32 +68,36 @@ void piping(char **before, char **after)
 		perror("fork");
 		exit(1);
 	}
-	else								//PARENT
+
+	int savestdin;
+
+	if((savestdin = dup(0)) == -1)
 	{
-		int savestdin;
+		perror("dup");
+		exit(1);
+	}
+	if(dup2(fd[0],0) == -1)
+	{
+		perror("dup2");
+		exit(1);
+	}
+	if(close(fd[1]) == -1)
+	{
+		perror("close");
+		exit(1);
+	}
+	if(wait(0) == -1)
+	{
+		perror("wait");
+		exit(1);
+	}
 
-		if((savestdin = dup(0)) == -1)
-		{
-			perror("dup");
-			exit(1);
-		}
-		if(dup2(fd[0],0) == -1)
-		{
-			perror("dup2");
-			exit(1);
-		}
-		if(close(fd[1]) == -1)
-		{
-			perror("close");
-			exit(1);
-		}
-		if(wait(0) == -1)
-		{
-			perror("wait");
-			exit(1);
-		}
+	prepiping(after,pipes);
 
-		prepiping(after,pipes);
+	if(dup2(savestdin,0) == -1)
+	{
+		perror("dup2");
+		exit(1);
 	}
 }
 
@@ -106,49 +111,74 @@ void prepiping(char **parg, bool pipe)
 	after = new char *[SUB_MAX];
 
 									//PROCESS
-	for(int i = 0; parg[i] != '\0'; i++)
-	{
-		if(strcmp(parg[i], "|") == 0)
-		{
-			ploc = i;					//location of first pipe
-			break;
-		}
-	}
-
-	for(int i = 0; i < ploc; i++)
-	{
-		before[i] = parg[i];					//populates before array with arg before pipe
-		if((i+1) == ploc)
-		{
-			before[i+1] = '\0';				//if whats next = pipe, null char in before array
-		}
-	}
-
-	ploc++;
-
-	for(int i = ploc; parg[i] != '\0'; i++)
-	{
-		after[i - ploc] = parg[i];				//populates after array with arg after pipe
-		if(parg[i+1] == '\0')
-		{
-			after[i+1] = '\0';				//if whats next is null char, null char in after array
-		}
-	}
-
 	if(pipe)
 	{
+		for(int i = 0; parg[i] != '\0'; i++)
+		{
+			if(strcmp(parg[i], "|") == 0)
+			{
+				ploc = i;				//location of first pipe
+				break;
+			}
+		}
+
+		for(int i = 0; i < ploc; i++)
+		{
+			before[i] = parg[i];				//populates before array with arg before pipe
+			if((i+1) == ploc)
+			{
+				before[i+1] = '\0';			//if whats next = pipe, null char in before array
+			}
+		}
+
+		ploc++;
+
+		for(int i = ploc; parg[i] != '\0'; i++)
+		{
+			after[i - ploc] = parg[i];			//populates after array with arg after pipe
+			if(parg[i+1] == '\0')
+			{
+				after[i+1] = '\0';			//if whats next is null char, null char in after array
+			}
+		}
+
 		piping(before, after);
 	}
 	else
 	{
-		if(execvp(after[0], after) == -1)			//error check for system call:execvp()
+		depipe(parg);
+	}
+}
+
+void depipe(char **args)
+{
+
+	int pid_f = fork();						//error check for system call:fork()
+	if(pid_f == 0)							//CHILD
+	{
+		//begin commands here
+		if(execvp(args[0], args) == -1)				//error check for system call:execvp()
 		{
 			perror("execvp");				//if execvp fails to function, exits with error code
 			exit(1);
 		}
+	
+		exit(2);
+	}
+	else if(pid_f == -1)						//ERROR
+	{
+		perror("fork");						//if fork fails to function, exits with error code
+		exit(1);
+	}
+	else								//PARENT
+	{
+		if(wait(0) == -1)					//wait for child
+		{
+			perror("wait");
+			exit(1);
+		}
 	}
 }
-
 
 								//MAIN PROCESS
 int main()
@@ -201,6 +231,7 @@ int main()
 			if(command[i] == '|')
 			{
 				pipe = true;				//sets piping to true after first pipe
+				break;
 			}
 		}
 
