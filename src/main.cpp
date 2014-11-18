@@ -160,8 +160,6 @@ int main()
 		char *pch;						//for strtok tokens(pointer)
 		char name[MAX_CAP];					//used for gethostname
 		bool pipe = false;					//boolean for piping
-		//int ploc = 0;						//location of pipes; MOVED TO void prepiping
-		//int pcnt = 0;						//counts the amount of pipes; NOT USED DELETE LATER
 		bool larrow = false;
 		bool rarrow = false;
 		bool drarrow = false;
@@ -187,7 +185,6 @@ int main()
 
 		char **arg;						//pointer to pointer of chars
 		arg = new char *[MAX_CAP];				//creates new array of size DEFINED
-		//arg[1023] = NULL;					//places NULL at second to last slot of array
 
 		for(int i = 0; i < MAX_CAP; i++)
 		{
@@ -205,8 +202,6 @@ int main()
 				pipe = true;				//sets piping to true after first pipe
 			}
 		}
-
-		
 
 		int it = 0;
 		for(pch = strtok(command, " \t");
@@ -239,16 +234,6 @@ int main()
 				}
 				else if(pipe)
 				{
-					/*
-					for(int i = 0; arg[i] != '\0'; i++)
-					{
-						if(strcmp(arg[i], "|") == 0)
-						{
-							ploc = i;	//location of first pipe
-							break;
-						}
-					}
-					*/
 					prepiping(arg,pipe);
 				}
 				
@@ -261,7 +246,11 @@ int main()
 			}
 			else						//PARENT
 			{
-				wait(NULL);				//wait for child
+				if(wait(0) == -1)			//wait for child
+				{
+					perror("wait");
+					exit(1);
+				}
 			}
 		}
 	}
