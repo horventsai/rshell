@@ -40,10 +40,6 @@ int main()
 		cout << getlogin() << "@" << name <<  " $ ";		//cout user prompt, bash prompt
 		cin.getline(command, 1024);				//cin user input
 		
-		//pch = strtok(command, " \t");				//parse user input into string tokens, taking input from 'command'
-
-		//com = strchr(command, '#');				//finds all cases of # in user input, only using first for comment initiation
-		
 
 		char **arg;						//pointer to pointer of chars
 		arg = new char *[1024];					//creates new array of size DEFINED
@@ -54,6 +50,11 @@ int main()
 			pch != NULL;
 			pch = strtok(NULL, " \t"))			//for-loop to move tokens into arg array
 		{
+			if((strcmp(pch, "#")) == 0)
+			{
+				arg[it] = NULL;			//breaks loop if pound is found
+				//break;
+			}
 			arg[it] = pch;					//at iterator it place token
 			it++;						//increase iterator by one
 		}
