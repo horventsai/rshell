@@ -148,6 +148,9 @@ void prepiping(char **parg, bool pipe)
 	{
 		depipe(parg);
 	}
+
+	delete []before;
+	delete []after;
 }
 
 void depipe(char **args)
