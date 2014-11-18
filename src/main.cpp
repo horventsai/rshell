@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <stdio.h>
+#include <fcntl.h>
 
 using namespace std;
 
@@ -19,7 +20,6 @@ int main()
 		char command[1024];					//used for user input, for the initial holding before parse
 		char *pch;						//for strtok tokens(pointer)
 		char name[1024];					//used for gethostname
-		//char *com;						//for strchr comment
 
 									//ERROR CHECKING FOR PROMPT
 		char *pid_ln = getlogin();				//error check for getlogin()
@@ -45,16 +45,20 @@ int main()
 		arg = new char *[1024];					//creates new array of size DEFINED
 		//arg[1023] = NULL;					//places NULL at second to last slot of array
 
+		for(int i = 0; i < 1024; i++)
+		{
+			if(command[i] == '#')
+			{
+				command[i] = '\0';			//places NULL char when # is found in command
+				break;					//ends loop if found
+			}
+		}
+
 		int it = 0;
 		for(pch = strtok(command, " \t");
 			pch != NULL;
 			pch = strtok(NULL, " \t"))			//for-loop to move tokens into arg array
 		{
-			if((strcmp(pch, "#")) == 0)
-			{
-				arg[it] = NULL;			//breaks loop if pound is found
-				//break;
-			}
 			arg[it] = pch;					//at iterator it place token
 			it++;						//increase iterator by one
 		}
