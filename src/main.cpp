@@ -14,10 +14,89 @@ using namespace std;
 								//GLOBAL DEFINITIONS AND MACROS
 #define MAX_CAP 1024
 #define SUB_MAX 256
+//exit(0) = exit with no error
+//exit(1) = exit with error
+//exit(2) = exit from child process
 
+								//HELPER PROTOTYPES
+void piping(char **before, char **after);
+void prepiping(char **parg, bool pipe);
 								//HELPER FUNCTIONS
+void piping(char **before, char **after)
+{
+	bool pipes = false;
 
-void prepiping(char **parg)
+	for(int i = 0; after[i] != '\0'; i++)
+	{
+		if(strcmp(after[i], "|") == 0)
+		{
+			pipes = true;					//more pipes after
+			break;
+		}
+	}
+
+	int fd[2];
+	if(pipe(fd) == -1)
+	{
+		perror("pipe");
+		exit(1);
+	}
+
+	int pid = fork();
+	if(pid == 0)							//CHILD
+	{
+		if(dup2(fd[1],1) == -1)
+		{
+			perror("dup2");
+			exit(1);
+		}
+		if(close(fd[0]) == -1)
+		{
+			perror("close");
+			exit(1);
+		}
+		if(execvp(before[0], before) == -1)
+		{
+			perror("execvp");
+			exit(1);
+		}
+		exit(2);
+	}
+	else if(pid == -1)						//ERROR
+	{
+		perror("fork");
+		exit(1);
+	}
+	else								//PARENT
+	{
+		int savestdin;
+
+		if((savestdin = dup(0)) == -1)
+		{
+			perror("dup");
+			exit(1);
+		}
+		if(dup2(fd[0],0) == -1)
+		{
+			perror("dup2");
+			exit(1);
+		}
+		if(close(fd[1]) == -1)
+		{
+			perror("close");
+			exit(1);
+		}
+		if(wait(0) == -1)
+		{
+			perror("wait");
+			exit(1);
+		}
+
+		prepiping(after,pipes);
+	}
+}
+
+void prepiping(char **parg, bool pipe)
 {
 									//VARIABLES
 	int ploc = 0;							//location of pipes
@@ -56,7 +135,18 @@ void prepiping(char **parg)
 		}
 	}
 
-	piping(before, after);
+	if(pipe)
+	{
+		piping(before, after);
+	}
+	else
+	{
+		if(execvp(after[0], after) == -1)			//error check for system call:execvp()
+		{
+			perror("execvp");				//if execvp fails to function, exits with error code
+			exit(1);
+		}
+	}
 }
 
 
@@ -141,10 +231,9 @@ int main()
 				if(!pipe)
 				{
 					//begin commands here
-					int pid_e = execvp(arg[0], arg);	//error check for system call:execvp()
-					if(pid_e == -1)
+					if(execvp(arg[0], arg) == -1)	//error check for system call:execvp()
 					{
-						perror("execvp");		//if execvp fails to function, exits with error code
+						perror("execvp");	//if execvp fails to function, exits with error code
 						exit(1);
 					}
 				}
@@ -160,8 +249,10 @@ int main()
 						}
 					}
 					*/
-					prepiping(arg);
+					prepiping(arg,pipe);
 				}
+				
+				exit(2);
 			}
 			else if(pid_f == -1)				//ERROR
 			{
@@ -171,7 +262,6 @@ int main()
 			else						//PARENT
 			{
 				wait(NULL);				//wait for child
-
 			}
 		}
 	}
