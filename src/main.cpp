@@ -12,8 +12,29 @@
 
 using namespace std;
 
+#define MAX_CAP 1024
+#define SUB_MAX 256
+
 void prepiping(char **parg)
 {
+									//VARIABLES
+	int ploc = 0;							//location of pipes
+	char **before;
+	char **after;
+	before = new char *[SUB_MAX];
+	after = new char *[SUB_MAX];
+
+									//PROCESS
+	for(int i = 0; parg[i] != '\0'; i++)
+	{
+		if(strcmp(parg[i], "|") == 0)
+		{
+			ploc = i;	//location of first pipe
+			break;
+		}
+	}
+
+	
 }
 
 
@@ -22,12 +43,12 @@ int main()
 	while(1)
 	{
 									//VARIABLES
-		char command[1024];					//used for user input, for the initial holding before parse
+		char command[MAX_CAP];					//used for user input, for the initial holding before parse
 		char *pch;						//for strtok tokens(pointer)
-		char name[1024];					//used for gethostname
+		char name[MAX_CAP];					//used for gethostname
 		bool pipe = false;					//boolean for piping
-		int ploc = 0;						//location of pipes
-		int pcnt = 0;
+		//int ploc = 0;						//location of pipes; MOVED TO void prepiping
+		//int pcnt = 0;						//counts the amount of pipes; NOT USED DELETE LATER
 		bool larrow = false;
 		bool rarrow = false;
 		bool drarrow = false;
@@ -39,7 +60,7 @@ int main()
 			perror("getlogin");
 			exit(1);
 		}
-		int pid_hn = gethostname(name, 1024);			//error check for gethostname()
+		int pid_hn = gethostname(name, MAX_CAP);		//error check for gethostname()
 		if(pid_hn != 0)
 		{
 			perror("gethostname");
@@ -48,14 +69,14 @@ int main()
 
 									//BEGINNING OF SHELL CODE
 		cout << getlogin() << "@" << name <<  " $ ";		//cout user prompt, bash prompt
-		cin.getline(command, 1024);				//cin user input
+		cin.getline(command, MAX_CAP);				//cin user input
 		
 
 		char **arg;						//pointer to pointer of chars
-		arg = new char *[1024];					//creates new array of size DEFINED
+		arg = new char *[MAX_CAP];				//creates new array of size DEFINED
 		//arg[1023] = NULL;					//places NULL at second to last slot of array
 
-		for(int i = 0; i < 1024; i++)
+		for(int i = 0; i < MAX_CAP; i++)
 		{
 			if(command[i] == '#')
 			{
@@ -106,6 +127,7 @@ int main()
 				}
 				else if(pipe)
 				{
+					/*
 					for(int i = 0; arg[i] != '\0'; i++)
 					{
 						if(strcmp(arg[i], "|") == 0)
@@ -114,8 +136,8 @@ int main()
 							break;
 						}
 					}
-
-					
+					*/
+					prepiping(arg);
 				}
 			}
 			else if(pid_f == -1)				//ERROR
