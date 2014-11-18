@@ -11,9 +11,11 @@
 #include <fcntl.h>
 
 using namespace std;
-
+								//GLOBAL DEFINITIONS AND MACROS
 #define MAX_CAP 1024
 #define SUB_MAX 256
+
+								//HELPER FUNCTIONS
 
 void prepiping(char **parg)
 {
@@ -29,15 +31,36 @@ void prepiping(char **parg)
 	{
 		if(strcmp(parg[i], "|") == 0)
 		{
-			ploc = i;	//location of first pipe
+			ploc = i;					//location of first pipe
 			break;
 		}
 	}
 
-	
+	for(int i = 0; i < ploc; i++)
+	{
+		before[i] = parg[i];					//populates before array with arg before pipe
+		if((i+1) == ploc)
+		{
+			before[i+1] = '\0';				//if whats next = pipe, null char in before array
+		}
+	}
+
+	ploc++;
+
+	for(int i = ploc; parg[i] != '\0'; i++)
+	{
+		after[i - ploc] = parg[i];				//populates after array with arg after pipe
+		if(parg[i+1] == '\0')
+		{
+			after[i+1] = '\0';				//if whats next is null char, null char in after array
+		}
+	}
+
+	piping(before, after);
 }
 
 
+								//MAIN PROCESS
 int main()
 {
 	while(1)
