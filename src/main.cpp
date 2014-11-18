@@ -12,6 +12,11 @@
 
 using namespace std;
 
+void prepiping(char **parg)
+{
+}
+
+
 int main()
 {
 	while(1)
@@ -20,6 +25,12 @@ int main()
 		char command[1024];					//used for user input, for the initial holding before parse
 		char *pch;						//for strtok tokens(pointer)
 		char name[1024];					//used for gethostname
+		bool pipe = false;					//boolean for piping
+		int ploc = 0;						//location of pipes
+		int pcnt = 0;
+		bool larrow = false;
+		bool rarrow = false;
+		bool drarrow = false;
 
 									//ERROR CHECKING FOR PROMPT
 		char *pid_ln = getlogin();				//error check for getlogin()
@@ -34,7 +45,6 @@ int main()
 			perror("gethostname");
 			exit(1);
 		}
-
 
 									//BEGINNING OF SHELL CODE
 		cout << getlogin() << "@" << name <<  " $ ";		//cout user prompt, bash prompt
@@ -53,6 +63,16 @@ int main()
 				break;					//ends loop if found
 			}
 		}
+
+		for(int i = 0; command[i] != '\0'; i++)
+		{
+			if(command[i] == '|')
+			{
+				pipe = true;				//sets piping to true after first pipe
+			}
+		}
+
+		
 
 		int it = 0;
 		for(pch = strtok(command, " \t");
@@ -74,12 +94,28 @@ int main()
 			int pid_f = fork();				//error check for system call:fork()
 			if(pid_f == 0)					//CHILD
 			{
-				//begin commands here
-				int pid_e = execvp(arg[0], arg);	//error check for system call:execvp()
-				if(pid_e == -1)
+				if(!pipe)
 				{
-					perror("execvp");		//if execvp fails to function, exits with error code
-					exit(1);
+					//begin commands here
+					int pid_e = execvp(arg[0], arg);	//error check for system call:execvp()
+					if(pid_e == -1)
+					{
+						perror("execvp");		//if execvp fails to function, exits with error code
+						exit(1);
+					}
+				}
+				else if(pipe)
+				{
+					for(int i = 0; arg[i] != '\0'; i++)
+					{
+						if(strcmp(arg[i], "|") == 0)
+						{
+							ploc = i;	//location of first pipe
+							break;
+						}
+					}
+
+					
 				}
 			}
 			else if(pid_f == -1)				//ERROR
