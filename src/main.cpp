@@ -231,7 +231,7 @@ void ioredir(char **ar)
 			{
 
 			}
-			if(strcmp(ar[i], ">>"))			//>>
+			if(strcmp(ar[i], ">>"))				//>>
 			{
 
 			}
