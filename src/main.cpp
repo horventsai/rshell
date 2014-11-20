@@ -22,6 +22,7 @@ using namespace std;
 void piping(char **before, char **after);
 void prepiping(char **parg, bool pipe);
 void depipe(char **args);
+void ioredir(char **ar);
 								//HELPER FUNCTIONS
 void piping(char **before, char **after)
 {
@@ -156,11 +157,74 @@ void prepiping(char **parg, bool pipe)
 void depipe(char **args)
 {
 
+	bool larrow = false;						//boolean for left arrow <
+	bool rarrow = false;						//boolean for right arrow >
+	bool drarrow = false;						//boolean for double right arrow >>
+	//bool tlarrow = false;						//boolean for triple left arrow <<<
+
+	for(int i = 0; args[i] != '\0'; i++)
+	{
+		if(strcmp(args[i], "<"))
+		{
+			larrow = true;					//sets piping to true after first pipe
+		}
+		if((!(strcmp(args[i-1], ">"))) && (strcmp(args[i], ">")) && (!(strcmp(args[i+1], ">"))))
+		{
+			rarrow = true;
+		}
+		if((strcmp(args[i], ">")) && (strcmp(args[i+1], ">")))
+		{
+			drarrow = true;
+		}
+	}
+
+	if(larrow || rarrow || drarrow)
+	{
+		ioredir(args);
+	}
+	else
+	{
+		int pid_f = fork();					//error check for system call:fork()
+		if(pid_f == 0)						//CHILD
+		{
+			//begin commands here
+			if(execvp(args[0], args) == -1)			//error check for system call:execvp()
+			{
+				perror("execvp");			//if execvp fails to function, exits with error code
+				exit(1);
+			}
+		
+			exit(2);
+		}
+		else if(pid_f == -1)					//ERROR
+		{
+			perror("fork");					//if fork fails to function, exits with error code
+			exit(1);
+		}
+		else							//PARENT
+		{
+			if(wait(0) == -1)				//wait for child
+			{
+				perror("wait");
+				exit(1);
+			}
+		}
+	}
+}
+
+void ioredir(char **ar)
+{
 	int pid_f = fork();						//error check for system call:fork()
 	if(pid_f == 0)							//CHILD
 	{
 		//begin commands here
-		if(execvp(args[0], args) == -1)				//error check for system call:execvp()
+		//BELOW
+		for(int i = 0; ar[i] != '\0'; i++)
+		{
+			//op code here for the ioredirection
+		}
+		//ABOVE
+		if(execvp(ar[0], ar) == -1)				//error check for system call:execvp()
 		{
 			perror("execvp");				//if execvp fails to function, exits with error code
 			exit(1);
@@ -182,7 +246,6 @@ void depipe(char **args)
 		}
 	}
 }
-
 								//MAIN PROCESS
 int main()
 {
@@ -270,6 +333,10 @@ int main()
 				else if(pipe)
 				{
 					prepiping(arg,pipe);
+				}
+				else if(!pipe && (larrow || rarrow || drarrow || tlarrow))
+				{
+					ioredir(arg);
 				}
 				
 				exit(2);
