@@ -166,15 +166,15 @@ void depipe(char **args)
 	{
 		if(strcmp(args[i], "<"))
 		{
-			larrow = true;					//sets piping to true after first pipe
+			larrow = true;					//sets < to true after <
 		}
-		if((!(strcmp(args[i-1], ">"))) && (strcmp(args[i], ">")) && (!(strcmp(args[i+1], ">"))))
+		if(strcmp(args[i], ">"))
 		{
-			rarrow = true;
+			rarrow = true;					//sets > to true after >
 		}
-		if((strcmp(args[i], ">")) && (strcmp(args[i+1], ">")))
+		if(strcmp(args[i], ">>"))
 		{
-			drarrow = true;
+			drarrow = true;					//sets >> to true after >>
 		}
 	}
 
@@ -221,7 +221,20 @@ void ioredir(char **ar)
 		//BELOW
 		for(int i = 0; ar[i] != '\0'; i++)
 		{
-			//op code here for the ioredirection
+									//op code here for the ioredirection
+	
+			if(strcmp(ar[i], "<"))				//<
+			{
+				
+			}
+			if(strcmp(ar[i], ">"))				//>
+			{
+
+			}
+			if(strcmp(ar[i], ">>"))			//>>
+			{
+
+			}
 		}
 		//ABOVE
 		if(execvp(ar[0], ar) == -1)				//error check for system call:execvp()
