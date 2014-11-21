@@ -11,6 +11,8 @@ WHATS SUPPORTED in
 --ls, with multiple flag support
 -version 11112014-hw1:
 --ls flags -a, -l, -R, and combinations
+-version 11202014-hw2:
+--pipes and i/o redirection
 
 KNOWN BUGS in
 -version from 10212014:
@@ -18,9 +20,11 @@ KNOWN BUGS in
 --cannot handle connectors
 --cannot access non-bin commands such as 'cd'
 --cannot finger self
-- version from 11112014
+-version from 11112014
 --flag -lR/Rl lists long format for current directory, simply for nested
 --flag -aR/Ra has a "no such file or directory error" 
+-version from 11202014
+--when cat <, gives error saying no such file or directory; will still run
 
 POSSIBLE BUGS:
 -memory leaks
