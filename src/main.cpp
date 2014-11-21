@@ -222,18 +222,61 @@ void ioredir(char **ar)
 		for(int i = 0; ar[i] != '\0'; i++)
 		{
 									//op code here for the ioredirection
-	
-			if(strcmp(ar[i], "<"))				//<
+			int fd;
+			int chk;
+			if(!strcmp(ar[i], "<"))				//<
 			{
-				
-			}
-			if(strcmp(ar[i], ">"))				//>
-			{
+				ar[i] = '\0';
+				fd = open(ar[i+1], O_RDONLY);
+				if(fd == -1)
+				{
+					perror("open");
+					exit(1);
+				}
+				chk = dup2(fd,0);
+				if(chk == -1)
+				{
+					perror("dup2");
+					exit(1);
+				}
 
+				break;
 			}
-			if(strcmp(ar[i], ">>"))				//>>
+			if(!strcmp(ar[i], ">"))				//>
 			{
+				ar[i] = NULL;
+				fd = open(ar[i+1], O_CREAT|O_WRONLY|O_TRUNC, 0666);
+				if(fd == -1)
+				{
+					perror("open");
+					exit(1);
+				}
+				chk = dup2(fd,1);
+				if(chk == -1)
+				{
+					perror("dup2");
+					exit(1);
+				}
 
+				break;
+			}
+			if(!strcmp(ar[i], ">>"))				//>>
+			{
+				ar[i] = NULL;
+				fd = open(ar[i+1], O_CREAT|O_WRONLY|O_APPEND, 0666);
+				if(fd == -1)
+				{
+					perror("open");
+					exit(1);
+				}
+				chk = dup2(fd,1);
+				if(chk == -1)
+				{
+					perror("dup2");
+					exit(1);
+				}
+
+				break;
 			}
 		}
 		//ABOVE
