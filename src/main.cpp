@@ -357,6 +357,24 @@ int main()
 			}
 		}
 
+
+		for(int i = 0; command[i] != '\0'; i++)
+		{
+			if(command[i] == '<')
+			{
+				larrow = true;					//sets < to true after <
+			}
+			if((command[i] == '>') && (command[i+1] != '>'))
+			{
+				rarrow = true;					//sets > to true after >
+			}
+			if((command[i] == '>') && (command[i+1] == '>'))
+			{
+				drarrow = true;					//sets >> to true after >>
+			}
+		}
+
+
 		int it = 0;
 		for(pch = strtok(command, " \t");
 			pch != NULL;
@@ -394,7 +412,10 @@ int main()
 				{
 					ioredir(arg);
 				}
-				
+				else if(pipe || larrow || rarrow || drarrow || tlarrow)
+				{
+					prepiping(arg,pipe);
+				}
 				exit(2);
 			}
 			else if(pid_f == -1)				//ERROR
