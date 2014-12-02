@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <fcntl.h>
+#include <signal.h>
 
 using namespace std;
 								//GLOBAL DEFINITIONS AND MACROS
@@ -302,9 +303,16 @@ void ioredir(char **ar)
 		}
 	}
 }
+
+void ctrl_c(int signum)
+{
+	signal(SIGINT, SIG_IGN);					//ignore the default signal handler
+}
 								//MAIN PROCESS
 int main()
 {
+	signal(SIGINT, ctrl_c);						//ctrl+c signal to rshell
+
 	while(1)
 	{
 									//VARIABLES
