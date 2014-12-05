@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include <signal.h>
 
@@ -20,12 +21,13 @@ using namespace std;
 //exit(2) = exit from child process
 
 								//HELPER PROTOTYPES
-void piping(char **before, char **after);
-void prepiping(char **parg, bool pipe);
-void depipe(char **args);
-void ioredir(char **ar);
+void piping(char **before, char **after, char **p);
+void prepiping(char **parg, bool pipe, char **pathss);
+void depipe(char **args, char **pats);
+void ioredir(char **ar, char **pa);
+void exv(char **paths, char **argss);
 								//HELPER FUNCTIONS
-void piping(char **before, char **after)
+void piping(char **before, char **after, char **p)
 {
 	bool pipes = false;
 
@@ -58,11 +60,14 @@ void piping(char **before, char **after)
 			perror("close");
 			exit(1);
 		}
+		/*
 		if(execvp(before[0], before) == -1)
 		{
 			perror("execvp");
 			exit(1);
 		}
+		*/
+		exv(p, before);
 		exit(2);
 	}
 	else if(pid == -1)						//ERROR
@@ -94,7 +99,7 @@ void piping(char **before, char **after)
 		exit(1);
 	}
 
-	prepiping(after,pipes);
+	prepiping(after, pipes, p);
 
 	if(dup2(savestdin,0) == -1)
 	{
@@ -103,7 +108,7 @@ void piping(char **before, char **after)
 	}
 }
 
-void prepiping(char **parg, bool pipe)
+void prepiping(char **parg, bool pipe, char **pathss)
 {
 									//VARIABLES
 	int ploc = 0;							//location of pipes
@@ -144,18 +149,18 @@ void prepiping(char **parg, bool pipe)
 			}
 		}
 
-		piping(before, after);
+		piping(before, after, pathss);
 	}
 	else
 	{
-		depipe(parg);
+		depipe(parg, pathss);
 	}
 
 	delete []before;
 	delete []after;
 }
 
-void depipe(char **args)
+void depipe(char **args, char **pats)
 {
 
 	bool larrow = false;						//boolean for left arrow <
@@ -181,7 +186,7 @@ void depipe(char **args)
 
 	if(larrow || rarrow || drarrow)
 	{
-		ioredir(args);
+		ioredir(args, pats);
 	}
 	else
 	{
@@ -189,11 +194,14 @@ void depipe(char **args)
 		if(pid_f == 0)						//CHILD
 		{
 			//begin commands here
+			/*
 			if(execvp(args[0], args) == -1)			//error check for system call:execvp()
 			{
 				perror("execvp");			//if execvp fails to function, exits with error code
 				exit(1);
 			}
+			*/
+			exv(pats, args);
 		
 			exit(2);
 		}
@@ -213,7 +221,7 @@ void depipe(char **args)
 	}
 }
 
-void ioredir(char **ar)
+void ioredir(char **ar, char **pa)
 {
 	int pid_f = fork();						//error check for system call:fork()
 	if(pid_f == 0)							//CHILD
@@ -281,11 +289,14 @@ void ioredir(char **ar)
 			}
 		}
 		//ABOVE
+		/*
 		if(execvp(ar[0], ar) == -1)				//error check for system call:execvp()
 		{
 			perror("execvp");				//if execvp fails to function, exits with error code
 			exit(1);
 		}
+		*/
+		exv(pa, ar);
 	
 		exit(2);
 	}
@@ -304,20 +315,96 @@ void ioredir(char **ar)
 	}
 }
 
-void ctrl_c(int signum)
+void exv(char **paths, char **argss)
 {
-	signal(SIGINT, SIG_IGN);					//ignore the default signal handler
+	//char temp[MAX_CAP];
+	//char *parsed[MAX_CAP];
+	//memset(temp, 0, MAX_CAP);
+	
+
+	for(int i = 0; paths[i] != '\0'; i++)
+	{
+		char temp[MAX_CAP] = {0};
+		char *parsed[MAX_CAP] = {0};
+		//memset(temp, 0, MAX_CAP);
+		
+
+		/*
+		strcpy(temp, paths[i]);
+		if(temp[strlen(temp) - 1] != '/')
+		{
+			strcat(temp, "/");
+		}
+
+		parsed[0] = temp;
+		for(int j = 0; argss[j] != '\0'; j++)
+		{
+			parsed[j+1] = argss[j];
+		}
+		*/
+
+		strcpy(temp, paths[i]);
+		strcat(temp, "/");
+		strcat(temp, argss[0]);
+
+		parsed[0] = temp;
+
+		for(int j = 1; argss[j] != '\0'; j++)
+		{
+			parsed[j] = argss[j];
+		}
+
+		if(execv(parsed[0], parsed) == -1)
+		{
+			//cout << "5" << endl;
+			continue;
+		}
+		else
+		{
+			//cout << "6" << endl;
+			memset(temp, 0, MAX_CAP);
+			memset(parsed, 0, MAX_CAP);
+			break;
+		}
+	}
+	if(errno == -1)
+	{
+		perror("execv");
+		exit(1);
+	}
+}
+
+void sigsig(int signum)
+{
+	if(signum == 2)							//if signum is 2 then ctrl+c
+	{
+		signal(SIGINT, SIG_IGN);				//ignore the default signal handler
+	}
+	/*
+	else if(signum == 20)						//if signum is 20 then ctrl+Z
+	{
+		signal(SIGTSTP, SIGCONT);		//WIP
+	}
+	*/
 }
 								//MAIN PROCESS
 int main()
 {
-	signal(SIGINT, ctrl_c);						//ctrl+c signal to rshell
+	if(signal(SIGINT, sigsig) == SIG_ERR)				//ctrl+c signal to rshell
+	{
+		perror("signal");
+	}
+	//signal(SIGTSTP, sigsig);					//ctrl+z signal to rshell
 
 	while(1)
 	{
 									//VARIABLES
 		char command[MAX_CAP];					//used for user input, for the initial holding before parse
 		char *pch;						//for strtok tokens(pointer)
+		char *pth = getenv("PATH");				//path for execv
+		//char *path[MAX_CAP];
+		char **path;						//used for path parse storage
+			path = new char *[MAX_CAP];
 		char name[MAX_CAP];					//used for gethostname
 		bool pipe = false;					//boolean for piping |
 		bool larrow = false;					//boolean for left arrow <
@@ -338,6 +425,17 @@ int main()
 			perror("gethostname");
 			exit(1);
 		}
+
+									//PARSE ENVIRONMENT PATH
+		int loc = 0;
+		for(pch = strtok(pth, ":");
+			pch != NULL;
+			pch = strtok(NULL, ":"))
+		{
+			path[loc] = pch;
+			loc++;
+		}
+		path[loc] = NULL;
 
 									//BEGINNING OF SHELL CODE
 		cout << getlogin() << "@" << name <<  " $ ";		//cout user prompt, bash prompt
@@ -406,23 +504,22 @@ int main()
 				if(!pipe && !larrow && !rarrow && !drarrow && !tlarrow)
 				{
 					//begin commands here
+					/*
 					if(execvp(arg[0], arg) == -1)	//error check for system call:execvp()
 					{
 						perror("execvp");	//if execvp fails to function, exits with error code
 						exit(1);
 					}
-				}
-				else if(pipe)
-				{
-					prepiping(arg,pipe);
-				}
-				else if(!pipe && (larrow || rarrow || drarrow || tlarrow))
-				{
-					ioredir(arg);
+					*/
+					exv(path, arg);
 				}
 				else if(pipe || larrow || rarrow || drarrow || tlarrow)
 				{
-					prepiping(arg,pipe);
+					prepiping(arg, pipe, path);
+				}
+				else if(!pipe && (larrow || rarrow || drarrow || tlarrow))
+				{
+					ioredir(arg, path);
 				}
 				exit(2);
 			}
