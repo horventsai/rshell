@@ -1,0 +1,102 @@
+Script started on Fri 05 Dec 2014 05:32:05 PM PST
+~
+htsai010@hammer $ ls[K[Kcs100
+[0;91m
+===============================================================================
+|                                                                             |
+| You have enabled settings specific for cs100.                               |
+|                                                                             |
+===============================================================================
+[0m
+[s%%%%%%%%%%[u[0;32mhtsai010[0;36m@[0;32mcs100[0;36m:[0;32m~[0;95m [0;36m$[0m cd cs`[K100/rshell/
+[s%%%%%%%%%%[u[0;32mhtsai010[0;36m@[0;32mcs100[0;36m:[0;32m~/cs100/rshell[0;95m (master) [0;36m$[0m make
+g++ -Wall -Werror -ansi -pedantic src/main.cpp -o bin/rshell
+g++ -Wall -Werror -ansi -pedantic src/ls.cpp -o bin/ls
+g++ -Wall -Werror -ansi -pedantic src/Timer.h
+g++ -Wall -Werror -ansi -pedantic src/cp.cpp -o bin/cp
+[s%%%%%%%%%%[u[0;32mhtsai010[0;36m@[0;32mcs100[0;36m:[0;32m~/cs100/rshell[0;95m (master) [0;36m$[0m bin/rshell 
+htsai010@hammer.cs.ucr.edu $ echo THIS IS IN THE PROGRAM
+THIS IS IN THE PROGRAM
+htsai010@hammer.cs.ucr.edu $ E echo LETS TRY THE OLD TESTS FROM HW2
+LETS TRY THE OLD TESTS FROM HW2
+htsai010@hammer.cs.ucr.edu $ ls
+bin  LICENSE  Makefile	Makefile~  README  README~  src  TEST  tests
+htsai010@hammer.cs.ucr.edu $ cat tes   TES	T
+this is just a tribute
+htsai010@hammer.cs.ucr.edu $ cat < TEST | tr a-z A-Z | tee o OUT1 | tr A-Z a-z >OU   OUT2 &
+/bin/cat: <: No such file or directory
+htsai010@hammer.cs.ucr.edu $ ls
+bin  LICENSE  Makefile	Makefile~  OUT1  OUT2  README  README~	src  TEST  tests
+htsai010@hammer.cs.ucr.edu $ cat out; co at out 2           
+/bin/cat: out: No such file or directory
+htsai010@hammer.cs.ucr.edu $ ^[[A
+htsai010@hammer.cs.ucr.edu $ cat OUT1
+THIS IS JUST A TRIBUTE
+htsai010@hammer.cs.ucr.edu $ cat UT  OUT2
+this is just a tribute
+htsai010@hammer.cs.ucr.edu $ rm out   OUR T1
+htsai010@hammer.cs.ucr.edu $ ls
+bin  LICENSE  Makefile	Makefile~  OUT2  README  README~  src  TEST  tests
+htsai010@hammer.cs.ucr.edu $ rm our   OUT2
+htsai010@hammer.cs.ucr.edu $ ls
+bin  LICENSE  Makefile	Makefile~  README  README~  src  TEST  tests
+htsai010@hammer.cs.ucr.edu $ pwd
+/home/csmajs/htsai010/cs100/rshell
+htsai010@hammer.cs.ucr.edu $ cd tests	/
+htsai010@hammer.cs.ucr.edu $ pwd
+/home/csmajs/htsai010/cs100/rshell/tests
+htsai010@hammer.cs.ucr.edu $ cd ..
+htsai010@hammer.cs.ucr.edu $ cd.  .
+htsai010@hammer.cs.ucr.edu $ ls
+bin  LICENSE  Makefile	Makefile~  README  README~  src  TEST  tests
+htsai010@hammer.cs.ucr.edu $ pwd
+/home/csmajs/htsai010/cs100/rshell
+htsai010@hammer.cs.ucr.edu $ touch TEXT
+htsai010@hammer.cs.ucr.edu $ ls
+bin  LICENSE  Makefile	Makefile~  README  README~  src  TEST  tests  TEXT
+htsai010@hammer.cs.ucr.edu $ cat t TEXT
+htsai010@hammer.cs.ucr.edu $ EC  echo HELLO WORLD >> TEXT
+htsai010@hammer.cs.ucr.edu $ ls
+bin  LICENSE  Makefile	Makefile~  README  README~  src  TEST  tests  TEXT
+htsai010@hammer.cs.ucr.edu $ cat TEXT
+HELLO WORLD
+htsai010@hammer.cs.ucr.edu $ ls >> TEXT
+htsai010@hammer.cs.ucr.edu $ ls
+bin  LICENSE  Makefile	Makefile~  README  README~  src  TEST  tests  TEXT
+htsai010@hammer.cs.ucr.edu $ cat TEXT
+HELLO WORLD
+bin
+LICENSE
+Makefile
+Makefile~
+README
+README~
+src
+TEST
+tests
+TEXT
+htsai010@hammer.cs.ucr.edu $ ls -a
+.  ..  bin  .git  LICENSE  Makefile  Makefile~	README	README~  src  TEST  tests  TEXT
+htsai010@hammer.cs.ucr.edu $ ls -la
+total 48
+drwx------ 6 htsai010 csmajs 4096 Dec  5 17:33 .
+drwx------ 9 htsai010 csmajs 4096 Nov 25 18:10 ..
+drwx------ 2 htsai010 csmajs 4096 Dec  5 17:30 bin
+drwx------ 8 htsai010 csmajs 4096 Dec  5 17:29 .git
+-rw------- 1 htsai010 csmajs   86 Nov  9 16:46 LICENSE
+-rw------- 1 htsai010 csmajs  279 Nov  9 17:58 Makefile
+-rw------- 1 htsai010 csmajs  214 Nov  9 16:51 Makefile~
+-rw------- 1 htsai010 csmajs  723 Nov 20 20:01 README
+-rw------- 1 htsai010 csmajs  723 Nov 20 19:46 README~
+drwx------ 2 htsai010 csmajs 4096 Dec  5 17:25 src
+-rw------- 1 htsai010 csmajs   23 Nov 20 00:46 TEST
+drwx------ 2 htsai010 csmajs 4096 Dec  5 17:30 tests
+-rw------- 1 htsai010 csmajs   78 Dec  5 17:34 TEXT
+htsai010@hammer.cs.ucr.edu $ clear     exit
+[s%%%%%%%%%%[u[0;32mhtsai010[0;36m@[0;32mcs100[0;36m:[0;32m~/cs100/rshell[0;95m (master) [0;36m$[0m exit
+exit
+~
+htsai010@hammer $ exit
+exit
+
+Script done on Fri 05 Dec 2014 05:36:49 PM PST
