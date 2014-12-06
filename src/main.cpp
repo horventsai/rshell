@@ -396,15 +396,32 @@ int main()
 	}
 	//signal(SIGTSTP, sigsig);					//ctrl+z signal to rshell
 
+	char *pth = getenv("PATH");				//path for execv
+	//char *path[MAX_CAP];
+	char **path;						//used for path parse storage
+		path = new char *[MAX_CAP];
+
+									//PARSE ENVIRONMENT PATH
+	int loc = 0;
+	char *pchs;
+	for(pchs = strtok(pth, ":");
+		pchs != NULL;
+		pchs = strtok(NULL, ":"))
+	{
+		path[loc] = pchs;
+		loc++;
+	}
+	path[loc] = NULL;
+
 	while(1)
 	{
 									//VARIABLES
 		char command[MAX_CAP];					//used for user input, for the initial holding before parse
 		char *pch;						//for strtok tokens(pointer)
-		char *pth = getenv("PATH");				//path for execv
+		//char *pth = getenv("PATH");				//path for execv
 		//char *path[MAX_CAP];
-		char **path;						//used for path parse storage
-			path = new char *[MAX_CAP];
+		//char **path;						//used for path parse storage
+		//	path = new char *[MAX_CAP];
 		char name[MAX_CAP];					//used for gethostname
 		bool pipe = false;					//boolean for piping |
 		bool larrow = false;					//boolean for left arrow <
@@ -426,7 +443,7 @@ int main()
 			exit(1);
 		}
 
-									//PARSE ENVIRONMENT PATH
+		/*							//PARSE ENVIRONMENT PATH
 		int loc = 0;
 		for(pch = strtok(pth, ":");
 			pch != NULL;
@@ -436,7 +453,7 @@ int main()
 			loc++;
 		}
 		path[loc] = NULL;
-
+		*/
 									//BEGINNING OF SHELL CODE
 		cout << getlogin() << "@" << name <<  " $ ";		//cout user prompt, bash prompt
 		cin.getline(command, MAX_CAP);				//cin user input
