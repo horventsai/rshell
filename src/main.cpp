@@ -317,31 +317,10 @@ void ioredir(char **ar, char **pa)
 
 void exv(char **paths, char **argss)
 {
-	//char temp[MAX_CAP];
-	//char *parsed[MAX_CAP];
-	//memset(temp, 0, MAX_CAP);
-	
-
 	for(int i = 0; paths[i] != '\0'; i++)
 	{
 		char temp[MAX_CAP] = {0};
 		char *parsed[MAX_CAP] = {0};
-		//memset(temp, 0, MAX_CAP);
-		
-
-		/*
-		strcpy(temp, paths[i]);
-		if(temp[strlen(temp) - 1] != '/')
-		{
-			strcat(temp, "/");
-		}
-
-		parsed[0] = temp;
-		for(int j = 0; argss[j] != '\0'; j++)
-		{
-			parsed[j+1] = argss[j];
-		}
-		*/
 
 		strcpy(temp, paths[i]);
 		strcat(temp, "/");
@@ -356,12 +335,10 @@ void exv(char **paths, char **argss)
 
 		if(execv(parsed[0], parsed) == -1)
 		{
-			//cout << "5" << endl;
 			continue;
 		}
 		else
 		{
-			//cout << "6" << endl;
 			memset(temp, 0, MAX_CAP);
 			memset(parsed, 0, MAX_CAP);
 			break;
@@ -400,7 +377,6 @@ int main()
 	//signal(SIGTSTP, sigsig);					//ctrl+z signal to rshell
 
 	char *pth = getenv("PATH");				//path for execv
-	//char *path[MAX_CAP];
 	char **path;						//used for path parse storage
 		path = new char *[MAX_CAP];
 
@@ -421,10 +397,6 @@ int main()
 									//VARIABLES
 		char command[MAX_CAP];					//used for user input, for the initial holding before parse
 		char *pch;						//for strtok tokens(pointer)
-		//char *pth = getenv("PATH");				//path for execv
-		//char *path[MAX_CAP];
-		//char **path;						//used for path parse storage
-		//	path = new char *[MAX_CAP];
 		char name[MAX_CAP];					//used for gethostname
 		bool pipe = false;					//boolean for piping |
 		bool larrow = false;					//boolean for left arrow <
@@ -451,17 +423,6 @@ int main()
 			perror("login");
 		}
 
-		/*							//PARSE ENVIRONMENT PATH
-		int loc = 0;
-		for(pch = strtok(pth, ":");
-			pch != NULL;
-			pch = strtok(NULL, ":"))
-		{
-			path[loc] = pch;
-			loc++;
-		}
-		path[loc] = NULL;
-		*/
 									//BEGINNING OF SHELL CODE
 		cout << getlogin() << "@" << name <<  " $ ";		//cout user prompt, bash prompt
 		cin.getline(command, MAX_CAP);				//cin user input
