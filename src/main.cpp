@@ -378,7 +378,10 @@ void sigsig(int signum)
 {
 	if(signum == 2)							//if signum is 2 then ctrl+c
 	{
-		signal(SIGINT, SIG_IGN);				//ignore the default signal handler
+		if(signal(SIGINT, SIG_IGN) == SIG_ERR);			//ignore the default signal handler
+		{
+			perror("signal");
+		}
 	}
 	/*
 	else if(signum == 20)						//if signum is 20 then ctrl+Z
@@ -441,6 +444,11 @@ int main()
 		{
 			perror("gethostname");
 			exit(1);
+		}
+
+		if(errno == -1)
+		{
+			perror("login");
 		}
 
 		/*							//PARSE ENVIRONMENT PATH
@@ -508,6 +516,27 @@ int main()
 		}
 		arg[it] = NULL;						//places NULL at slot in array right after parse finishes
 
+		if(!strcmp(arg[0], "cd"))
+		{
+			if(it == 1)
+			{
+				char *dirch = getenv("HOME");
+				chdir(dirch);
+			}
+			else
+			{
+				chdir(arg[1]);
+			}
+			if(errno == -1)
+			{
+				perror("chdir");
+			}
+		}
+		if(errno == -1)
+		{
+			perror("chdir");
+		}
+
 		if(!strcmp(command,"exit"))				//if 'command' only holds exit,
 		{
 			delete []arg;					//delete []arg on exit prompt
@@ -538,6 +567,12 @@ int main()
 				{
 					ioredir(arg, path);
 				}
+
+				if(errno == -1)
+				{
+					perror("piping");
+				}
+
 				exit(2);
 			}
 			else if(pid_f == -1)				//ERROR
