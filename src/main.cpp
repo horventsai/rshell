@@ -516,6 +516,7 @@ int main()
 		if(!strcmp(command,"exit"))				//if 'command' only holds exit,
 		{
 			delete []arg;					//delete []arg on exit prompt
+			delete []cstr;
 			exit(0);					//exit without loading error code; exit code: 0
 		}
 		else
