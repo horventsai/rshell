@@ -381,7 +381,17 @@ int main()
 		path = new char *[MAX_CAP];
 
 									//PARSE ENVIRONMENT PATH
+
 	int loc = 0;
+
+	string base = "./";
+	char *cstr = new char[base.length() + 1];
+	strcpy(cstr, base.c_str());
+	path[loc] = cstr;
+	loc++;
+
+	//delete []cstr;
+
 	char *pchs;
 	for(pchs = strtok(pth, ":");
 		pchs != NULL;
@@ -496,6 +506,11 @@ int main()
 		if(errno == -1)
 		{
 			perror("chdir");
+		}
+
+		if(!strcmp(arg[0], ""))
+		{
+			continue;
 		}
 
 		if(!strcmp(command,"exit"))				//if 'command' only holds exit,
